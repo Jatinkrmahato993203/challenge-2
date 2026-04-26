@@ -1,7 +1,6 @@
 import { mockFlows } from '../data/mock';
 import { Layout } from '../components/Layout';
 import { Link } from 'react-router-dom';
-import { FileText, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 export function FlowsIndex() {

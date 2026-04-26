@@ -4,9 +4,11 @@ import { Calendar, Search, List, Info, ChevronRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { mockEvents } from '../data/mock';
 import { isAfter, parseISO, differenceInDays } from 'date-fns';
+import { useStore } from '../store/useStore';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
+  const { selectedJurisdiction } = useStore();
 
   const navItems = [
     { name: 'Timeline', path: '/', icon: Calendar },
@@ -16,6 +18,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   const now = new Date();
   const upcomingDeadline = mockEvents
+    .filter(e => selectedJurisdiction === 'all' || e.jurisdiction === selectedJurisdiction || e.jurisdiction === 'in-nat')
     .filter(e => (e.type === 'deadline' || e.type === 'registration') && isAfter(parseISO(e.startDate), now))
     .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())[0];
   
@@ -61,7 +64,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      <main className="flex-1 w-full px-4 md:px-8 py-8 md:py-12">
+      <main className="flex-1 w-full px-4 md:px-8 py-8 md:py-12 pb-24 md:pb-12">
         {children}
       </main>
 

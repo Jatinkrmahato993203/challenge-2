@@ -10,12 +10,12 @@ function HighlightedText({ text, highlight }: { text: string; highlight: string 
   if (!highlight.trim()) {
     return <span>{text}</span>;
   }
-  const regex = new RegExp(`(${highlight})`, 'gi');
+  const regex = new RegExp(`(${highlight})`, 'i');
   const parts = text.split(regex);
   return (
     <span>
       {parts.map((part, i) => 
-        regex.test(part) ? <mark key={i} className="bg-yellow-200 text-black px-0.5 rounded-sm">{part}</mark> : <span key={i}>{part}</span>
+        part.toLowerCase() === highlight.toLowerCase() ? <mark key={i} className="bg-yellow-200 text-black px-0.5 rounded-sm">{part}</mark> : <span key={i}>{part}</span>
       )}
     </span>
   );
@@ -37,7 +37,7 @@ export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent;
     >
       <div className="flex flex-col gap-1">
         {isPast ? (
-           <p className="text-[10px] uppercase font-bold text-blue-600 mb-0.5 tracking-wider">Completed</p>
+           <p className="text-[10px] uppercase font-bold text-gray-500 mb-0.5 tracking-wider">Passed</p>
         ) : isUpcoming ? (
            <p className="text-[10px] uppercase font-bold text-red-600 mb-0.5 tracking-wider">Active / Upcoming</p>
         ) : null}
@@ -62,14 +62,14 @@ export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent;
                       {action.title}
                     </Link>
                   </Button>
-                ) : (
+                ) : action.resources.length > 0 ? (
                   <Button key={action.id} asChild variant={action.required ? "default" : "outline"} size="sm" title="Opens in new tab" aria-label={`Opens ${action.title} in new tab`}>
                     <a href={action.resources[0]?.url} target="_blank" rel="noopener noreferrer">
                       {action.title}
                       <ExternalLink className="w-3 h-3 ml-2" />
                     </a>
                   </Button>
-                )
+                ) : null
               ))}
             </div>
 
