@@ -5,9 +5,64 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Playfair Display", ui-serif, Georgia, serif;
   --color-editorial-bg: #FDFCFB;
+  --color-editorial-bg-alt: #F1EDE9;
   --color-editorial-text: #1A1A1A;
   --color-editorial-border: #E5E2DE;
   --color-editorial-muted: #6B655E;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+      --color-editorial-bg: #111111;
+      --color-editorial-bg-alt: #1F1F1F;
+      --color-editorial-text: #EEEEEE;
+      --color-editorial-border: #333333;
+      --color-editorial-muted: #AAAAAA;
+  }
+}
+
+@media print {
+  /* Set a white background and black text for print to save ink */
+  :root {
+    --color-editorial-bg: #FFFFFF;
+    --color-editorial-bg-alt: #F9F9F9;
+    --color-editorial-text: #000000;
+    --color-editorial-border: #CCCCCC;
+    --color-editorial-muted: #555555;
+  }
+
+  /* Hide interactive elements and navigation */
+  header, nav, button, .toaster {
+    display: none !important;
+  }
+
+  /* Adjust layout for print */
+  body {
+    background: white;
+    color: black;
+    margin: 0;
+    padding: 0;
+  }
+
+  main {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Ensure text wraps nicely and isn't cut off */
+  * {
+    overflow: visible !important;
+    page-break-inside: avoid;
+  }
+
+  /* Optional: Ensure specific sections like EventCards don't split across pages */
+  .event-card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 2rem;
+  }
 }
 
 body {

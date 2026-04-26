@@ -9,6 +9,8 @@ interface StoreState {
   flowProgress: Record<string, Record<string, boolean>>; // flowId -> stepId -> boolean
   toggleChecklistItem: (flowId: string, itemId: string) => void;
   resetFlowProgress: (flowId: string) => void;
+  notificationsEnabled: boolean;
+  requestNotificationPermission: () => Promise<void>;
 }
 
 export const useStore = create<StoreState>()(
@@ -37,7 +39,13 @@ export const useStore = create<StoreState>()(
           const newProgress = { ...state.flowProgress };
           delete newProgress[flowId];
           return { flowProgress: newProgress };
-        })
+        }),
+      notificationsEnabled: false,
+      requestNotificationPermission: async () => {
+        if (!('Notification' in window)) return;
+        const permission = await Notification.requestPermission();
+        set({ notificationsEnabled: permission === 'granted' });
+      }
     }),
     {
       name: 'civic-guide-store',

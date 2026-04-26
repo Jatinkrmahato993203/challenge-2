@@ -1,6 +1,8 @@
 {
-  "name": "",
-  "description": "",
-  "requestFramePermissions": [],
+  "name": "Civic Guide",
+  "description": "An interactive, non-partisan assistant designed to help voters understand election processes, timelines, and actionable steps.",
+  "requestFramePermissions": [
+    "notifications"
+  ],
   "majorCapabilities": []
 }

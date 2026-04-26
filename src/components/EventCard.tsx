@@ -71,11 +71,33 @@ export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent;
                   </Button>
                 ) : null
               ))}
+              <Button asChild variant="outline" size="sm" title="Add to calendar" aria-label={`Add ${event.title} to calendar`}>
+                <a href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${format(parseISO(event.startDate), "yyyyMMdd'T'HHmmss'Z'")}/${format(parseISO(event.endDate || event.startDate), "yyyyMMdd'T'HHmmss'Z'")}&details=${encodeURIComponent(event.description)}`} target="_blank" rel="noopener noreferrer">
+                  Add to Calendar
+                  <CalendarDays className="w-3 h-3 ml-2" />
+                </a>
+              </Button>
+              <Button asChild variant="outline" size="sm" onClick={() => {
+                const store = useStore.getState();
+                if ('Notification' in window) {
+                  Notification.requestPermission().then(permission => {
+                    store.requestNotificationPermission();
+                    if(permission === 'granted'){
+                        new Notification('Reminders turned on for ' + event.title);
+                    }
+                  });
+                }
+              }}>
+                <button>
+                   Remind Me
+                   <AlertCircle className="w-3 h-3 ml-2" />
+                </button>
+              </Button>
             </div>
 
             {event.sources.length > 0 && (
               <div className="text-[10px] text-[var(--color-editorial-muted)] italic font-serif flex items-center gap-1">
-                Source: <a href={event.sources[0].url} className="font-bold text-[#1A1A1A] border-b border-dotted border-black hover:text-black" target="_blank" rel="noreferrer" title="Opens in new tab" aria-label={`Source: ${event.sources[0].name}, opens in new tab`}>{event.sources[0].name}</a>
+                Source: <a href={event.sources[0].url} className="font-bold text-[var(--color-editorial-text)] border-b border-dotted border-[var(--color-editorial-text)] hover:opacity-80" target="_blank" rel="noreferrer" title="Opens in new tab" aria-label={`Source: ${event.sources[0].name}, opens in new tab`}>{event.sources[0].name}</a>
               </div>
             )}
           </div>

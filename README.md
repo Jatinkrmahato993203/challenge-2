@@ -1,20 +1,33 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Civic Guide
 
-# Run and deploy your AI Studio app
+Civic Guide is an interactive, non-partisan progressive web app (PWA) designed to help voters understand election processes, timelines, and actionable steps. It translates complex bureaucratic deadlines into clear, step-by-step actions that can be saved offline.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/a2994a6d-47a7-443f-9d18-11572e834983
+- **Interactive Timeline**: Track important election deadlines visually.
+- **Guided Workflows**: Step-by-step checklists to ensure you are registered and prepared to vote (e.g., getting a voter ID, checking your registration).
+- **Progressive Web App (PWA)**: Installable, available offline, ready to be used wherever you go.
+- **Push Notification Reminders**: Get notified on deadlines.
+- **Rich Integration**: Ability to add events securely to your local Google Calendar or copy a summary text to your system clipboard or webshare.
+- **Dark Mode Capable**: Styled perfectly using adaptive Editorial UI/UX recipes.
+- **Fully Accessible**: Conforms to AA level web accessibility guidelines with semantic tags and easy readability.
+- **Lazy Loaded Views**: Highly performant React bundle loaded selectively based on route.
+- **AI Assist (Coming Soon)**: A conversational AI built with the Gemini API to help contextualize the election guide timeline.
 
-## Run Locally
+## Technology Stack
 
-**Prerequisites:**  Node.js
+- **React 19**
+- **Vite 6**
+- **Tailwind CSS 4**
+- **Framer Motion** (for nuanced interaction state feedback)
+- **Zustand** (store persistence context payload)
+- **React Router Dom** 
 
+## Running Locally
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+To install and run the code on the web platform run:
+
+```bash
+npm install
+npm run dev
+```

@@ -80,11 +80,11 @@ export function Home() {
           );
         })}
         {filteredEvents.length === 0 && (
-          <div className="text-center py-16 text-[var(--color-editorial-muted)] border-2 border-dashed border-[#E5E2DE] p-8 mt-4 bg-white relative z-20 mx-4 md:ml-10">
+          <div className="text-center py-16 text-[var(--color-editorial-muted)] border-2 border-dashed border-[var(--color-editorial-border)] p-8 mt-4 bg-[var(--color-editorial-bg-alt)] relative z-20 mx-4 md:ml-10">
             <div className="mx-auto w-12 h-12 border border-[var(--color-editorial-border)] rounded-full flex items-center justify-center mb-4">
               <Search className="w-5 h-5 text-[var(--color-editorial-muted)]" />
             </div>
-            <p className="text-lg font-serif mb-2 text-black">No events found matching your criteria.</p>
+            <p className="text-lg font-serif mb-2 text-[var(--color-editorial-text)]">No events found matching your criteria.</p>
             <p className="text-xs mb-6 max-w-sm mx-auto leading-relaxed">Try adjusting your filters or clearing your search to see all upcoming deadlines and events.</p>
             <Button variant="outline" onClick={() => { setSearchQuery(''); setSelectedJurisdiction('all'); }}>Clear Search</Button>
           </div>

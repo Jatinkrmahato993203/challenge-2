@@ -3,9 +3,10 @@ import { useParams, Link } from 'react-router-dom';
 import { mockFlows } from '../data/mock';
 import { useStore } from '../store/useStore';
 import { Layout } from '../components/Layout';
-import { CheckCircle2, ArrowRight, ArrowLeft, RotateCcw, Check, Sparkles } from 'lucide-react';
+import { CheckCircle2, ArrowRight, ArrowLeft, RotateCcw, Check, Sparkles, Copy } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 
 export function WizardPage() {
   const { flowId } = useParams();
@@ -14,6 +15,7 @@ export function WizardPage() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
   const [showNextWarning, setShowNextWarning] = useState(false);
+  const [hasToastedSave, setHasToastedSave] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -38,6 +40,32 @@ export function WizardPage() {
   }, 0);
   const overallProgress = (totalCompleted / flow.steps.length) * 100;
 
+  const handleShare = async () => {
+    const summary = `I completed ${totalCompleted}/${flow.steps.length} steps for '${flow.title}' on Civic Guide.`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Civic Guide Progress',
+          text: summary,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.error('Error sharing', err);
+      }
+    } else {
+      await navigator.clipboard.writeText(summary);
+      toast.success('Porgress summary copied to clipboard!');
+    }
+  };
+
+  const handleToggle = (flowId: string, itemId: string) => {
+      toggleChecklistItem(flowId, itemId);
+      if (!hasToastedSave) {
+          toast('Progress saved to your device');
+          setHasToastedSave(true);
+      }
+  };
+
   if (isFinished) {
     return (
       <Layout>
@@ -51,13 +79,16 @@ export function WizardPage() {
                <Sparkles className="w-10 h-10 text-green-600" />
              </motion.div>
            </div>
-           <h1 className="text-4xl md:text-5xl font-serif font-black tracking-tighter text-[#1A1A1A] mb-4">
+           <h1 className="text-4xl md:text-5xl font-serif font-black tracking-tighter text-[var(--color-editorial-text)] mb-4">
              You've completed this guide!
            </h1>
            <p className="text-[var(--color-editorial-muted)] text-lg mb-10 max-w-lg mx-auto leading-relaxed">
              Great job. You've successfully completed all the steps for <strong>{flow.title}</strong>. Make sure you've also checked off any official forms if required.
            </p>
            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+             <Button onClick={handleShare} variant="outline" size="lg">
+                <Copy className="w-4 h-4 mr-2" /> Copy Progress Summary
+             </Button>
              <Button asChild size="lg">
                <Link to="/flows">Back to Guided Actions</Link>
              </Button>
@@ -83,6 +114,7 @@ export function WizardPage() {
       return;
     }
     if (currentStepIndex < flow.steps.length - 1) {
+      toast.success("Step complete! Moving to next step.");
       setCurrentStepIndex(currentStepIndex + 1);
     } else {
       setIsFinished(true);
@@ -108,9 +140,9 @@ export function WizardPage() {
           </div>
           <div className="text-right hidden sm:block">
             <span className="text-[10px] text-[var(--color-editorial-muted)] block mb-2 uppercase tracking-widest font-bold">Progress</span>
-            <div className="w-32 md:w-48 h-1 bg-[#E5E2DE] overflow-hidden">
+            <div className="w-32 md:w-48 h-1 bg-[var(--color-editorial-border)] overflow-hidden">
               <motion.div 
-                className="h-full bg-black origin-left"
+                className="h-full bg-[var(--color-editorial-text)] origin-left"
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: overallProgress / 100 }}
                 transition={{ duration: 0.5 }}
@@ -135,7 +167,7 @@ export function WizardPage() {
                const idxComplete = s.checklistItems.filter(i => !i.optional).every(i => progress[i.id]);
                return (
                  <div key={s.id} className="flex flex-col gap-1 items-center">
-                   <div className={`w-2 h-2 rounded-full ${idx === currentStepIndex ? 'bg-black ring-2 ring-black ring-offset-2 ring-offset-[var(--color-editorial-bg)]' : idxComplete ? 'bg-green-600' : 'bg-[#E5E2DE]'}`} />
+                   <div className={`w-2 h-2 rounded-full ${idx === currentStepIndex ? 'bg-[var(--color-editorial-text)] ring-2 ring-[var(--color-editorial-text)] ring-offset-2 ring-offset-[var(--color-editorial-bg)]' : idxComplete ? 'bg-green-600' : 'bg-[var(--color-editorial-border)]'}`} />
                  </div>
                )
             })}
@@ -149,13 +181,13 @@ export function WizardPage() {
                 return (
                   <button
                     key={item.id}
-                    onClick={() => toggleChecklistItem(flow.id, item.id)}
-                    className={`w-full flex items-start text-left p-6 border-2 transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1
-                      ${isChecked ? 'border-black bg-[#FDFCFB]' : 'border-[var(--color-editorial-border)] bg-transparent hover:border-black'}
+                    onClick={() => handleToggle(flow.id, item.id)}
+                    className={`w-full flex items-start text-left p-6 border-2 transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-editorial-text)] focus-visible:ring-offset-1
+                      ${isChecked ? 'border-[var(--color-editorial-text)] bg-[var(--color-editorial-bg-alt)]' : 'border-[var(--color-editorial-border)] bg-transparent hover:border-[var(--color-editorial-text)]'}
                     `}
                   >
                     <div className={`w-8 h-8 md:w-10 md:h-10 border shrink-0 flex items-center justify-center mr-6 rounded-full
-                        ${isChecked ? 'border-green-600 bg-green-50 text-green-600' : 'border-[#E5E2DE] text-transparent hover:border-black'}
+                        ${isChecked ? 'border-green-600 bg-green-500/10 text-green-600' : 'border-[var(--color-editorial-border)] text-transparent hover:border-[var(--color-editorial-text)]'}
                       `}
                     >
                       <motion.div
@@ -167,7 +199,7 @@ export function WizardPage() {
                       </motion.div>
                     </div>
                     <div className="flex-1 mt-1 md:mt-2">
-                       <span className={`block font-bold text-lg md:text-xl leading-tight ${isChecked ? 'text-black' : 'text-[var(--color-editorial-text)]'}`}>
+                       <span className={`block font-bold text-lg md:text-xl leading-tight ${isChecked ? 'text-[var(--color-editorial-text)]' : 'text-[var(--color-editorial-text)]'}`}>
                         {item.text}
                       </span>
                       {item.optional && (
@@ -180,7 +212,7 @@ export function WizardPage() {
             </div>
           </div>
 
-          <div className="pt-8 border-t border-dashed border-[#E5E2DE] flex flex-col sm:flex-row items-center justify-between gap-4 relative">
+          <div className="pt-8 border-t border-dashed border-[var(--color-editorial-border)] flex flex-col sm:flex-row items-center justify-between gap-4 relative">
             <Button 
               variant="outline" 
               onClick={() => setCurrentStepIndex(Math.max(0, currentStepIndex - 1))}
@@ -218,7 +250,7 @@ export function WizardPage() {
           </div>
 
           <div className="mt-8 text-center sm:text-right">
-             <button onClick={() => resetFlowProgress(flow.id)} className="text-[10px] text-[var(--color-editorial-muted)] uppercase tracking-widest font-bold underline underline-offset-4 hover:text-black">
+             <button onClick={() => resetFlowProgress(flow.id)} className="text-[10px] text-[var(--color-editorial-muted)] uppercase tracking-widest font-bold underline underline-offset-4 hover:text-[var(--color-editorial-text)]">
                Reset Progress
              </button>
           </div>
