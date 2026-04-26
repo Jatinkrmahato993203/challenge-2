@@ -50,7 +50,7 @@ export function FlowsIndex() {
                 {flow.title}
               </h3>
               <p className="text-xs text-[var(--color-editorial-muted)] mb-6 flex-1 leading-relaxed">
-                {flow.steps.length} steps to complete this process.
+                {totalCompleted} / {flow.steps.length} steps completed.
               </p>
 
               <div className="mt-auto border-t border-[var(--color-editorial-border)] pt-4">

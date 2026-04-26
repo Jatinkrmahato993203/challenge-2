@@ -5,6 +5,7 @@ import { Input } from '../components/ui/input';
 import { Search } from 'lucide-react';
 import { isAfter, parseISO } from 'date-fns';
 import { Layout } from '../components/Layout';
+import { Button } from '../components/ui/button';
 
 export function Home() {
   const { searchQuery, setSearchQuery, selectedJurisdiction, setSelectedJurisdiction } = useStore();
@@ -66,21 +67,26 @@ export function Home() {
         
         {filteredEvents.map((event, index) => {
           const isUpcoming = index === upcomingDeadlineIndex;
-          const isPast = isAfter(now, parseISO(event.startDate));
+          const isPast = !isAfter(parseISO(event.startDate), now);
           return (
             <div key={event.id} className="relative pl-6 md:pl-10 pb-8 md:pb-12">
               {/* Timeline dot */}
               <div className={`absolute top-2 -left-[2px] z-10
                 ${isUpcoming ? 'w-3 h-3 rounded-full border-2 border-black bg-[var(--color-editorial-bg)] -left-[4px]' : 'w-2 h-2 rounded-full bg-black'}
-                ${isPast ? '' : (isUpcoming ? '' : 'opacity-40 bg-[var(--color-editorial-muted)]')}
+                ${isPast ? 'opacity-40 bg-[var(--color-editorial-muted)]' : ''}
               `} />
               <EventCard event={event} isUpcoming={isUpcoming} isPast={isPast} />
             </div>
           );
         })}
         {filteredEvents.length === 0 && (
-          <div className="text-center py-12 text-slate-500">
-            No events found matching your criteria.
+          <div className="text-center py-16 text-[var(--color-editorial-muted)] border-2 border-dashed border-[#E5E2DE] p-8 mt-4 bg-white relative z-20 mx-4 md:ml-10">
+            <div className="mx-auto w-12 h-12 border border-[var(--color-editorial-border)] rounded-full flex items-center justify-center mb-4">
+              <Search className="w-5 h-5 text-[var(--color-editorial-muted)]" />
+            </div>
+            <p className="text-lg font-serif mb-2 text-black">No events found matching your criteria.</p>
+            <p className="text-xs mb-6 max-w-sm mx-auto leading-relaxed">Try adjusting your filters or clearing your search to see all upcoming deadlines and events.</p>
+            <Button variant="outline" onClick={() => { setSearchQuery(''); setSelectedJurisdiction('all'); }}>Clear Search</Button>
           </div>
         )}
       </div>

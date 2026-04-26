@@ -4,18 +4,35 @@ import { CalendarDays, AlertCircle, ArrowRight, ExternalLink } from 'lucide-reac
 import { motion } from 'motion/react';
 import { Button } from './ui/button';
 import { Link } from 'react-router-dom';
+import { useStore } from '../store/useStore';
+
+function HighlightedText({ text, highlight }: { text: string; highlight: string }) {
+  if (!highlight.trim()) {
+    return <span>{text}</span>;
+  }
+  const regex = new RegExp(`(${highlight})`, 'gi');
+  const parts = text.split(regex);
+  return (
+    <span>
+      {parts.map((part, i) => 
+        regex.test(part) ? <mark key={i} className="bg-yellow-200 text-black px-0.5 rounded-sm">{part}</mark> : <span key={i}>{part}</span>
+      )}
+    </span>
+  );
+}
 
 export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent; isUpcoming?: boolean; isPast?: boolean }) {
   const isDeadline = event.type === 'deadline' || event.type === 'registration';
   const start = parseISO(event.startDate);
+  const { searchQuery } = useStore();
   
   return (
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className={`relative bg-transparent p-0 transition-opacity
-        ${(isPast || (!isUpcoming && !isPast)) && !isUpcoming ? 'opacity-50' : 'opacity-100'}
+      className={`relative bg-transparent p-0 transition-opacity duration-300
+        ${isPast ? 'opacity-50 hover:opacity-75' : 'opacity-100'}
       `}
     >
       <div className="flex flex-col gap-1">
@@ -25,9 +42,11 @@ export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent;
            <p className="text-[10px] uppercase font-bold text-red-600 mb-0.5 tracking-wider">Active / Upcoming</p>
         ) : null}
         
-        <h3 className="font-bold text-lg md:text-xl leading-tight mb-1 text-[var(--color-editorial-text)]">{event.title}</h3>
+        <h3 className="font-bold text-lg md:text-xl leading-tight mb-1 text-[var(--color-editorial-text)]">
+          <HighlightedText text={event.title} highlight={searchQuery} />
+        </h3>
         <p className="text-xs md:text-sm text-[var(--color-editorial-muted)] max-w-xl leading-relaxed mb-1">
-          {event.description}
+          <HighlightedText text={event.description} highlight={searchQuery} />
         </p>
         <p className="text-[10px] md:text-xs mt-1 font-mono text-[var(--color-editorial-muted)] uppercase">
           {format(start, 'MMM dd, yyyy')} {event.endDate && `— ${format(parseISO(event.endDate), 'MMM dd, yyyy')}`}
@@ -44,7 +63,7 @@ export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent;
                     </Link>
                   </Button>
                 ) : (
-                  <Button key={action.id} asChild variant={action.required ? "default" : "outline"} size="sm">
+                  <Button key={action.id} asChild variant={action.required ? "default" : "outline"} size="sm" title="Opens in new tab" aria-label={`Opens ${action.title} in new tab`}>
                     <a href={action.resources[0]?.url} target="_blank" rel="noopener noreferrer">
                       {action.title}
                       <ExternalLink className="w-3 h-3 ml-2" />
@@ -56,7 +75,7 @@ export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent;
 
             {event.sources.length > 0 && (
               <div className="text-[10px] text-[var(--color-editorial-muted)] italic font-serif flex items-center gap-1">
-                Source: <a href={event.sources[0].url} className="font-bold text-[#1A1A1A] border-b border-dotted border-black hover:text-black" target="_blank" rel="noreferrer">{event.sources[0].name}</a>
+                Source: <a href={event.sources[0].url} className="font-bold text-[#1A1A1A] border-b border-dotted border-black hover:text-black" target="_blank" rel="noreferrer" title="Opens in new tab" aria-label={`Source: ${event.sources[0].name}, opens in new tab`}>{event.sources[0].name}</a>
               </div>
             )}
           </div>

@@ -7,6 +7,7 @@ interface StoreState {
   setSelectedJurisdiction: (j: string) => void;
   flowProgress: Record<string, Record<string, boolean>>; // flowId -> stepId -> boolean
   toggleChecklistItem: (flowId: string, itemId: string) => void;
+  resetFlowProgress: (flowId: string) => void;
 }
 
 export const useStore = create<StoreState>((set) => ({
@@ -27,5 +28,11 @@ export const useStore = create<StoreState>((set) => ({
           }
         }
       };
+    }),
+  resetFlowProgress: (flowId) =>
+    set((state) => {
+      const newProgress = { ...state.flowProgress };
+      delete newProgress[flowId];
+      return { flowProgress: newProgress };
     })
 }));

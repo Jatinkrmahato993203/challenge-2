@@ -2,6 +2,8 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Calendar, Search, List, Info, ChevronRight } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { mockEvents } from '../data/mock';
+import { isAfter, parseISO, differenceInDays } from 'date-fns';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -11,6 +13,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
     { name: 'Wizards', path: '/flows', icon: List },
     { name: 'About', path: '/about', icon: Info },
   ];
+
+  const now = new Date();
+  const upcomingDeadline = mockEvents
+    .filter(e => (e.type === 'deadline' || e.type === 'registration') && isAfter(parseISO(e.startDate), now))
+    .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())[0];
+  
+  let statusText = "No upcoming deadlines";
+  if (upcomingDeadline) {
+    const days = differenceInDays(parseISO(upcomingDeadline.startDate), now);
+    statusText = `${upcomingDeadline.title} — ${days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `In ${days} Days`}`;
+  }
 
   return (
     <div className="min-h-screen bg-[var(--color-editorial-bg)] flex flex-col font-sans text-editorial-text border-x-8 border-[var(--color-editorial-bg)] max-w-[1200px] mx-auto shadow-sm relative overflow-hidden">
@@ -41,10 +54,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Sub-Header: Global Status */}
-      <div className="h-12 bg-[#F1EDE9] border-b border-[var(--color-editorial-border)] flex items-center px-4 md:px-8">
-        <div className="flex items-center space-x-2">
+      <div className="h-12 bg-[#F1EDE9] border-b border-[var(--color-editorial-border)] flex items-center px-4 md:px-8 overflow-hidden whitespace-nowrap">
+        <div className="flex items-center space-x-2 w-full">
           <span className="w-2 h-2 rounded-full bg-red-600 shrink-0"></span>
-          <p className="text-xs font-medium uppercase tracking-tight truncate">Status: <span className="font-bold">Next Deadline in 14 Days</span></p>
+          <p className="text-xs font-medium uppercase tracking-tight truncate w-full">Status: <span className="font-bold">{statusText}</span></p>
         </div>
       </div>
 
@@ -54,7 +67,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile Bottom Nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#FDFCFB] border-t border-[var(--color-editorial-border)] z-30 pb-safe">
-        <div className="flex justify-around items-center h-16">
+        <div className="flex justify-around items-center h-16 px-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
@@ -63,11 +76,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  "flex flex-col items-center justify-center w-full h-full text-[10px] uppercase tracking-wider font-bold gap-1",
-                  isActive ? "text-[#1A1A1A] underline underline-offset-4" : "text-[var(--color-editorial-muted)] hover:text-[#1A1A1A]"
+                  "flex flex-col items-center justify-center w-full h-full text-[10px] uppercase tracking-wider font-bold gap-1 transition-colors rounded-lg mx-1",
+                  isActive ? "text-[#1A1A1A] bg-gray-100" : "text-[var(--color-editorial-muted)] hover:text-[#1A1A1A] hover:bg-gray-50"
                 )}
               >
-                <Icon className={cn("w-4 h-4", isActive ? "stroke-[2px]" : "stroke-2")} />
+                <div className="relative">
+                  <Icon className={cn("w-4 h-4", isActive ? "stroke-[2.5px]" : "stroke-2")} />
+                  {isActive && <span className="absolute -top-1 -right-1.5 w-1.5 h-1.5 bg-black rounded-full" />}
+                </div>
                 {item.name}
               </Link>
             );
