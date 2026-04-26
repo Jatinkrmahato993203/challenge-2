@@ -1,8 +1,14 @@
 {
-  "name": "Civic Guide",
-  "description": "An interactive, non-partisan assistant designed to help voters understand election processes, timelines, and actionable steps.",
+  "name": "Civic Compass",
+  "description": "An interactive, non-partisan election guide that helps Indian voters navigate registration deadlines, polling timelines, and step-by-step civic actions—with guided wizards, jurisdiction filters, and persistent progress tracking.",
   "requestFramePermissions": [
     "notifications"
   ],
-  "majorCapabilities": []
+  "majorCapabilities": [
+    "Interactive election timeline with search and jurisdiction filtering",
+    "Step-by-step guided wizards for voter registration (Form 6) and electoral roll verification",
+    "Persistent checklist progress saved locally on device",
+    "Upcoming deadline alerts in the global status bar",
+    "Links to official ECI, Voters Service Portal, and Electoral Search sources"
+  ]
 }
