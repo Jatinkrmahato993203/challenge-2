@@ -47,7 +47,8 @@ export function WizardPage() {
   const overallProgress = (totalCompleted / flow.steps.length) * 100;
 
   const handleShare = async () => {
-    const summary = `I completed ${totalCompleted}/${flow.steps.length} steps for '${flow.title}' on Civic Guide.`;
+    const title = (t.flowContent as any)?.[flow.id]?.title || flow.title;
+    const summary = typeof t.shareSummary === 'function' ? t.shareSummary(totalCompleted, flow.steps.length, title) : `I completed ${totalCompleted}/${flow.steps.length} steps for '${title}' on Civic Guide.`;
     if (navigator.share) {
       try {
         await navigator.share({
@@ -86,20 +87,20 @@ export function WizardPage() {
              </motion.div>
            </div>
            <h1 className="text-4xl md:text-5xl font-serif font-black tracking-tighter text-[var(--color-editorial-text)] mb-4">
-             You've completed this guide!
+             {t.completedGuideTitle}
            </h1>
            <p className="text-[var(--color-editorial-muted)] text-lg mb-10 max-w-lg mx-auto leading-relaxed">
-             Great job. You've successfully completed all the steps for <strong>{flow.title}</strong>. Make sure you've also checked off any official forms if required.
+             {t.completedGuideText((t.flowContent as any)?.[flow.id]?.title || flow.title)}
            </p>
            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
              <Button onClick={handleShare} variant="outline" size="lg">
-                <Copy className="w-4 h-4 mr-2" /> Copy Progress Summary
+                <Copy className="w-4 h-4 mr-2" /> {t.copySummary}
              </Button>
              <Button asChild size="lg">
-               <Link to="/flows">Back to Guided Actions</Link>
+               <Link to="/flows">{t.backToActions}</Link>
              </Button>
              <Button variant="outline" size="lg" onClick={() => { resetFlowProgress(flow.id); setIsFinished(false); setCurrentStepIndex(0); }}>
-               <RotateCcw className="w-4 h-4 mr-2" /> Start Over
+               <RotateCcw className="w-4 h-4 mr-2" /> {t.startOver}
              </Button>
            </div>
         </div>
@@ -132,7 +133,7 @@ export function WizardPage() {
       <div className="max-w-3xl mx-auto py-4 md:py-8">
         {/* Breadcrumb */}
         <Link to="/flows" className="inline-flex items-center text-[10px] uppercase font-bold text-[var(--color-editorial-muted)] hover:text-black tracking-widest mb-8 transition-colors">
-          <ArrowLeft className="w-3 h-3 mr-2" /> Back to Guided Actions
+          <ArrowLeft className="w-3 h-3 mr-2" /> {t.backToActions}
         </Link>
 
         <div className="mb-8 flex items-baseline justify-between border-b border-[var(--color-editorial-border)] pb-8 overflow-hidden">
@@ -141,11 +142,11 @@ export function WizardPage() {
               Step {String(currentStepIndex + 1).padStart(2, '0')}
             </h1>
             <p className="uppercase text-xs tracking-widest font-bold text-[var(--color-editorial-muted)] mt-4">
-              {flow.title}
+              {(t.flowContent as any)?.[flow.id]?.title || flow.title}
             </p>
           </div>
           <div className="text-right hidden sm:block">
-            <span className="text-[10px] text-[var(--color-editorial-muted)] block mb-2 uppercase tracking-widest font-bold">Progress</span>
+            <span className="text-[10px] text-[var(--color-editorial-muted)] block mb-2 uppercase tracking-widest font-bold">{t.progress}</span>
             <div className="w-32 md:w-48 h-1 bg-[var(--color-editorial-border)] overflow-hidden">
               <motion.div 
                 className="h-full bg-[var(--color-editorial-text)] origin-left"
@@ -155,7 +156,7 @@ export function WizardPage() {
               />
             </div>
             <span className="text-[10px] text-[var(--color-editorial-muted)] block mt-2 font-mono">
-              {Math.round(overallProgress)}% Complete
+              {Math.round(overallProgress)}% {t.progress}
             </span>
           </div>
         </div>
@@ -163,8 +164,8 @@ export function WizardPage() {
         <div className="bg-transparent" aria-live="polite">
           {/* Step Header */}
           <div className="mb-4">
-            <h2 ref={stepHeadingRef} tabIndex={-1} className="text-3xl md:text-4xl font-serif mb-4 leading-snug focus-visible:outline-none focus:ring-2 focus:ring-[var(--color-editorial-text)] focus:ring-offset-2">{step.title}</h2>
-            <p className="text-sm md:text-base text-[var(--color-editorial-muted)] leading-relaxed max-w-2xl">{step.description}</p>
+            <h2 ref={stepHeadingRef} tabIndex={-1} className="text-3xl md:text-4xl font-serif mb-4 leading-snug focus-visible:outline-none focus:ring-2 focus:ring-[var(--color-editorial-text)] focus:ring-offset-2">{(t.flowContent as any)?.[flow.id]?.[`step${currentStepIndex + 1}`]?.title || step.title}</h2>
+            <p className="text-sm md:text-base text-[var(--color-editorial-muted)] leading-relaxed max-w-2xl">{(t.flowContent as any)?.[flow.id]?.[`step${currentStepIndex + 1}`]?.desc || step.description}</p>
           </div>
 
           {/* Step Tracker (● ○ ○) */}
@@ -206,10 +207,10 @@ export function WizardPage() {
                     </div>
                     <div className="flex-1 mt-1 md:mt-2">
                        <span className={`block font-bold text-lg md:text-xl leading-tight ${isChecked ? 'text-[var(--color-editorial-text)]' : 'text-[var(--color-editorial-text)]'}`}>
-                        {item.text}
+                        {(t.flowContent as any)?.[flow.id]?.items?.[item.id] || item.text}
                       </span>
                       {item.optional && (
-                        <span className="text-[10px] text-[var(--color-editorial-muted)] uppercase tracking-widest font-bold mt-2 block">Optional</span>
+                        <span className="text-[10px] text-[var(--color-editorial-muted)] uppercase tracking-widest font-bold mt-2 block">{(t as any).optional}</span>
                       )}
                     </div>
                   </button>
@@ -226,7 +227,7 @@ export function WizardPage() {
               className="w-full sm:w-auto"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Previous
+              {t.previous}
             </Button>
 
             <div className="flex items-center gap-2 w-full sm:w-auto relative">
@@ -238,7 +239,7 @@ export function WizardPage() {
                      exit={{ opacity: 0 }}
                      className="text-[10px] uppercase font-bold text-red-600 tracking-widest text-center absolute -top-8 left-0 right-0 bg-red-50 p-1"
                    >
-                     * Required tasks pending
+                     {t.requiredTasksPending}
                    </motion.div>
                  )}
                </AnimatePresence>
@@ -247,9 +248,9 @@ export function WizardPage() {
                 className={`w-full sm:w-auto ${!isStepComplete && 'opacity-60 hover:opacity-80'}`}
               >
                 {currentStepIndex < flow.steps.length - 1 ? (
-                  <>Next Step <ArrowRight className="w-4 h-4 ml-2" /></>
+                  <>{t.nextStep} <ArrowRight className="w-4 h-4 ml-2" /></>
                 ) : (
-                  <>Finish Flow <CheckCircle2 className="w-4 h-4 ml-2" /></>
+                  <>{t.finishFlow} <CheckCircle2 className="w-4 h-4 ml-2" /></>
                 )}
               </Button>
             </div>
@@ -257,7 +258,7 @@ export function WizardPage() {
 
           <div className="mt-8 text-center sm:text-right">
              <button onClick={() => resetFlowProgress(flow.id)} className="text-[10px] text-[var(--color-editorial-muted)] uppercase tracking-widest font-bold underline underline-offset-4 hover:text-[var(--color-editorial-text)]">
-               Reset Progress
+               {t.resetProgress}
              </button>
           </div>
         </div>

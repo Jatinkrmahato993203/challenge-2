@@ -2,9 +2,11 @@ import { mockFlows } from '../data/mock';
 import { Layout } from '../components/Layout';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
+import { translations } from '../data/i18n';
 
 export function FlowsIndex() {
-  const { flowProgress } = useStore();
+  const { flowProgress, language } = useStore();
+  const t = translations[language];
 
   return (
     <Layout>
@@ -46,7 +48,7 @@ export function FlowsIndex() {
               </div>
               
               <h3 className="font-bold text-xl mb-2 text-[var(--color-editorial-text)]">
-                {flow.title}
+                {(t.flowContent as any)?.[flow.id]?.title || flow.title}
               </h3>
               <p className="text-xs text-[var(--color-editorial-muted)] mb-6 flex-1 leading-relaxed">
                 {totalCompleted} / {flow.steps.length} steps completed.

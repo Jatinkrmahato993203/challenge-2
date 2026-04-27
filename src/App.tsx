@@ -87,7 +87,7 @@ function About() {
             </div>
              <div>
                <h3 className="font-bold text-[var(--color-editorial-text)] mb-1">Environmental Impact</h3>
-               <p>By completing this process digitally, you help reduce paper usage in the electoral process resulting in less physical waste and lower transportation carbon footprint.</p>
+               <p>Completing forms digitally reduces paper consumption across India's electoral process, resulting in less physical waste and a lower transportation carbon footprint.</p>
             </div>
           </div>
 
