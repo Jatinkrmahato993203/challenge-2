@@ -125,6 +125,9 @@ export function WizardPage() {
       setCurrentStepIndex(currentStepIndex + 1);
     } else {
       setIsFinished(true);
+      if (typeof window !== 'undefined' && 'gtag' in window) {
+        (window as any).gtag('event', 'flow_completed', { flow_id: flow.id });
+      }
     }
   };
 

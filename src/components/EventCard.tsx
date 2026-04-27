@@ -6,6 +6,7 @@ import { Button } from './ui/button';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { translations } from '../data/i18n';
+import { getGoogleCalendarUrl } from '../lib/calendar';
 
 function HighlightedText({ text, highlight }: { text: string; highlight: string }) {
   if (!highlight.trim()) {
@@ -75,7 +76,7 @@ export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent;
                 ) : null
               })}
               <Button asChild variant="outline" size="sm" title="Add to calendar" aria-label={`Add ${event.title} to calendar`}>
-                <a href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${format(parseISO(event.startDate), "yyyyMMdd'T'HHmmss'Z'")}/${format(parseISO(event.endDate || event.startDate), "yyyyMMdd'T'HHmmss'Z'")}&details=${encodeURIComponent(event.description)}`} target="_blank" rel="noopener noreferrer">
+                <a href={getGoogleCalendarUrl(event, window.location.href)} target="_blank" rel="noopener noreferrer">
                   {t.addToCalendar}
                   <CalendarDays className="w-3 h-3 ml-2" />
                 </a>

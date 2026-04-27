@@ -71,7 +71,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
             })}
           </nav>
           <div className="flex items-center gap-4 border-l pl-6 border-[var(--color-editorial-border)]">
-             <button onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')} className="text-[10px] uppercase font-bold flex items-center gap-1 hover:opacity-70" title="Toggle Language">
+             <button onClick={() => {
+                const updatedLanguage = language === 'en' ? 'hi' : 'en';
+                setLanguage(updatedLanguage);
+                if (typeof window !== 'undefined' && 'gtag' in window) {
+                  (window as any).gtag('event', 'language_switch', { language: updatedLanguage });
+                }
+             }} className="text-[10px] uppercase font-bold flex items-center gap-1 hover:opacity-70" title="Toggle Language">
                 <Languages className="w-4 h-4" /> <span className="hidden sm:inline">{t.language}</span>
              </button>
              <button onClick={toggleSimpleMode} className="text-[10px] uppercase font-bold flex items-center gap-1 hover:opacity-70" title="Toggle Simple Mode">
