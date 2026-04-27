@@ -49,6 +49,12 @@ export const mockJurisdictions: Jurisdiction[] = [
     timezone: 'Asia/Kolkata',
     officialSources: ['https://ceo.gujarat.gov.in/'],
   },
+  {
+    id: 'in-as',
+    name: 'Assam (State Assembly)',
+    timezone: 'Asia/Kolkata',
+    officialSources: ['https://ceoassam.nic.in/'],
+  },
 ];
 
 export const mockEvents: ElectionEvent[] = [
