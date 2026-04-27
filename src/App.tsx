@@ -2,19 +2,27 @@ import React, { Suspense, Component, ErrorInfo, ReactNode } from 'react';
 import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Button } from './components/ui/button';
+import { AIChat } from './components/AIChat';
 
 // Lazy loaded routes
 const Home = React.lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const FlowsIndex = React.lazy(() => import('./pages/FlowsIndex').then(module => ({ default: module.FlowsIndex })));
 const WizardPage = React.lazy(() => import('./pages/WizardPage').then(module => ({ default: module.WizardPage })));
 
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
+interface Props {
+  children: ReactNode;
+}
 
-  static getDerivedStateFromError(_: Error) {
+interface State {
+  hasError: boolean;
+}
+
+class ErrorBoundary extends Component<Props, State> {
+  public state: State = {
+    hasError: false
+  };
+
+  static getDerivedStateFromError(_: Error): State {
     return { hasError: true };
   }
 
@@ -116,6 +124,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <AIChat />
         </Suspense>
       </HashRouter>
     </ErrorBoundary>
