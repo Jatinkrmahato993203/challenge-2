@@ -85,6 +85,10 @@ function About() {
                <h3 className="font-bold text-[var(--color-editorial-text)] mb-1">How often is the data updated?</h3>
                <p>The dates reflect the schedules published by the Election Commission. For definitive timings, always cross-reference official portals.</p>
             </div>
+             <div>
+               <h3 className="font-bold text-[var(--color-editorial-text)] mb-1">Environmental Impact</h3>
+               <p>By completing this process digitally, you help reduce paper usage in the electoral process resulting in less physical waste and lower transportation carbon footprint.</p>
+            </div>
           </div>
 
           <div className="pt-8 border-t border-[var(--color-editorial-border)] text-[10px] uppercase tracking-widest font-bold">

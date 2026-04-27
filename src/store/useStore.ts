@@ -11,6 +11,10 @@ interface StoreState {
   resetFlowProgress: (flowId: string) => void;
   notificationsEnabled: boolean;
   requestNotificationPermission: () => Promise<void>;
+  language: 'en' | 'hi';
+  setLanguage: (lang: 'en' | 'hi') => void;
+  simpleMode: boolean;
+  toggleSimpleMode: () => void;
 }
 
 export const useStore = create<StoreState>()(
@@ -45,7 +49,11 @@ export const useStore = create<StoreState>()(
         if (!('Notification' in window)) return;
         const permission = await Notification.requestPermission();
         set({ notificationsEnabled: permission === 'granted' });
-      }
+      },
+      language: 'en',
+      setLanguage: (lang) => set({ language: lang }),
+      simpleMode: false,
+      toggleSimpleMode: () => set((state) => ({ simpleMode: !state.simpleMode }))
     }),
     {
       name: 'civic-guide-store',

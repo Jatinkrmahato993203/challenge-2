@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { mockFlows } from '../data/mock';
 import { useStore } from '../store/useStore';
@@ -7,18 +7,24 @@ import { CheckCircle2, ArrowRight, ArrowLeft, RotateCcw, Check, Sparkles, Copy }
 import { Button } from '../components/ui/button';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
+import { translations } from '../data/i18n';
 
 export function WizardPage() {
   const { flowId } = useParams();
   const flow = mockFlows[flowId || ''];
-  const { flowProgress, toggleChecklistItem, resetFlowProgress } = useStore();
+  const { flowProgress, toggleChecklistItem, resetFlowProgress, language } = useStore();
+  const t = translations[language];
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
   const [showNextWarning, setShowNextWarning] = useState(false);
   const [hasToastedSave, setHasToastedSave] = useState(false);
+  const stepHeadingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (stepHeadingRef.current && !isFinished) {
+      stepHeadingRef.current.focus();
+    }
   }, [currentStepIndex, isFinished]);
 
   if (!flow) {
@@ -154,10 +160,10 @@ export function WizardPage() {
           </div>
         </div>
 
-        <div className="bg-transparent">
+        <div className="bg-transparent" aria-live="polite">
           {/* Step Header */}
           <div className="mb-4">
-            <h2 className="text-3xl md:text-4xl font-serif mb-4 leading-snug">{step.title}</h2>
+            <h2 ref={stepHeadingRef} tabIndex={-1} className="text-3xl md:text-4xl font-serif mb-4 leading-snug focus-visible:outline-none focus:ring-2 focus:ring-[var(--color-editorial-text)] focus:ring-offset-2">{step.title}</h2>
             <p className="text-sm md:text-base text-[var(--color-editorial-muted)] leading-relaxed max-w-2xl">{step.description}</p>
           </div>
 

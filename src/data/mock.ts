@@ -25,6 +25,30 @@ export const mockJurisdictions: Jurisdiction[] = [
     timezone: 'Asia/Kolkata',
     officialSources: ['https://ceo.karnataka.gov.in/'],
   },
+  {
+    id: 'in-up',
+    name: 'Uttar Pradesh (State Assembly)',
+    timezone: 'Asia/Kolkata',
+    officialSources: ['https://ceouttarpradesh.nic.in/'],
+  },
+  {
+    id: 'in-tn',
+    name: 'Tamil Nadu (State Assembly)',
+    timezone: 'Asia/Kolkata',
+    officialSources: ['https://www.elections.tn.gov.in/'],
+  },
+  {
+    id: 'in-wb',
+    name: 'West Bengal (State Assembly)',
+    timezone: 'Asia/Kolkata',
+    officialSources: ['https://ceowestbengal.nic.in/'],
+  },
+  {
+    id: 'in-gj',
+    name: 'Gujarat (State Assembly)',
+    timezone: 'Asia/Kolkata',
+    officialSources: ['https://ceo.gujarat.gov.in/'],
+  },
 ];
 
 export const mockEvents: ElectionEvent[] = [
@@ -369,5 +393,67 @@ export const mockFlows: Record<string, Flow> = {
           linkToEvents: ['evt-4']
         }
       ]
+  },
+  'flow-nri': {
+    id: 'flow-nri',
+    title: 'Register as an Overseas (NRI) Voter — Form 6A',
+    steps: [
+      {
+        id: 'nri-step-1',
+        title: 'Check Eligibility',
+        description: 'You must be a citizen of India, absent from your place of ordinary residence in India, and not acquired citizenship of any other country.',
+        checklistItems: [
+          { id: 'nri-1', text: 'Confirm Indian citizenship', optional: false },
+          { id: 'nri-2', text: 'Hold a valid Indian Passport', optional: false },
+        ],
+        linkToEvents: []
+      },
+      {
+        id: 'nri-step-2',
+        title: 'Gather Documents',
+        description: 'Prepare the necessary documents to upload.',
+        checklistItems: [
+          { id: 'nri-3', text: 'Passport size photograph', optional: false },
+          { id: 'nri-4', text: 'Copy of Passport (pages with photo, address in India, passport details)', optional: false },
+          { id: 'nri-5', text: 'Copy of valid visa/residence permit', optional: false },
+        ],
+        linkToEvents: []
+      },
+      {
+        id: 'nri-step-3',
+        title: 'Submit Form 6A',
+        description: 'Fill out Form 6A online on the Voters Service Portal or overseasvoter.eci.gov.in.',
+        checklistItems: [
+          { id: 'nri-6', text: 'Submit Form 6A online', optional: false },
+        ],
+        linkToEvents: []
+      }
+    ]
+  },
+  'flow-pwd': {
+    id: 'flow-pwd',
+    title: 'Voting as a Person with a Disability',
+    steps: [
+      {
+        id: 'pwd-step-1',
+        title: 'Register as PwD Voter',
+        description: 'Mark yourself as a Person with Disability to avail special facilities at the polling booth or opt for home voting.',
+        checklistItems: [
+          { id: 'pwd-1', text: 'Register via Saksham App or NVSP (Form 8)', optional: false },
+          { id: 'pwd-2', text: 'Receive PwD marked Voter ID', optional: true },
+        ],
+        linkToEvents: []
+      },
+      {
+        id: 'pwd-step-2',
+        title: 'Request Accommodations',
+        description: 'You can request a wheelchair, volunteer assistance, or a postal ballot (Form 12D) if eligible.',
+        checklistItems: [
+          { id: 'pwd-3', text: 'Request pick-up/drop facility (if available in your district)', optional: true },
+          { id: 'pwd-4', text: 'Submit Form 12D for Home Voting (if eligible & required)', optional: true },
+        ],
+        linkToEvents: ['evt-7']
+      }
+    ]
   }
 };
