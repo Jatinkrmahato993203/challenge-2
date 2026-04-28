@@ -41,6 +41,17 @@ export default defineConfig(({mode}) => {
         }
       })
     ],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'google-maps': ['@vis.gl/react-google-maps'],
+            'google-ai': ['@google/genai'],
+            'vendor': ['react', 'react-dom', 'react-router-dom']
+          }
+        }
+      }
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

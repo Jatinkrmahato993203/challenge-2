@@ -74,7 +74,10 @@ export function PollingStationMap({ jurisdiction }: { jurisdiction: string }) {
   // Using the provided API key explicitly as a fallback
   // @ts-ignore
   const envKey = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_GOOGLE_MAPS_KEY : undefined;
-  const apiKey = envKey || 'AIzaSyA5sJ9I8vUN2y3V6YEjDeNUWlGktr6O2Lc';
+  let apiKey = envKey || 'AIzaSyA5sJ9I8vUN2y3V6YEjDeNUWlGktr6O2Lc';
+  if (apiKey && typeof apiKey === 'string') {
+    apiKey = apiKey.replace(/^["']|["']$/g, '');
+  }
 
   useEffect(() => {
     // Catch Google Maps authentication failures (e.g., restricted or invalid keys)

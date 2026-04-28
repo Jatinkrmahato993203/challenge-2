@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import { mockEvents, mockJurisdictions } from '../data/mock';
 import { EventCard } from '../components/EventCard';
 import { useStore } from '../store/useStore';
@@ -6,7 +7,8 @@ import { Search, MapPin } from 'lucide-react';
 import { isAfter, parseISO } from 'date-fns';
 import { Layout } from '../components/Layout';
 import { Button } from '../components/ui/button';
-import { PollingStationMap } from '../components/PollingStationMap';
+
+const PollingStationMap = React.lazy(() => import('../components/PollingStationMap').then(m => ({ default: m.PollingStationMap })));
 
 export function Home() {
   const { searchQuery, setSearchQuery, selectedJurisdiction, setSelectedJurisdiction } = useStore();
@@ -66,7 +68,9 @@ export function Home() {
             <MapPin className="w-5 h-5" />
             Find Your Polling Station
           </h3>
-          <PollingStationMap jurisdiction={selectedJurisdiction} />
+          <Suspense fallback={<div className="w-full h-[400px] bg-[var(--color-editorial-bg-alt)] border border-[var(--color-editorial-border)] animate-pulse rounded-lg" />}>
+            <PollingStationMap jurisdiction={selectedJurisdiction} />
+          </Suspense>
         </div>
       </div>
 
