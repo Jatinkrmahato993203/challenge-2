@@ -83,7 +83,7 @@ export function AIChat() {
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className="fixed bottom-6 right-6 w-[90vw] sm:w-[400px] h-[500px] max-h-[80vh] bg-[var(--color-editorial-bg)] border border-[var(--color-editorial-border)] shadow-2xl z-50 flex flex-col font-sans overflow-hidden"
           >
-            <div className="flex items-center justify-between p-4 border-b border-[var(--color-editorial-border)] bg-[#f8f9fa]">
+            <div className="flex items-center justify-between p-4 border-b border-[var(--color-editorial-border)] bg-[var(--color-editorial-bg-alt)]">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-[var(--color-editorial-text)] text-[var(--color-editorial-bg)] flex items-center justify-center">
                   <Bot className="w-4 h-4" />
@@ -105,7 +105,7 @@ export function AIChat() {
                     className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                       m.role === 'user' 
                         ? 'bg-[var(--color-editorial-text)] text-[var(--color-editorial-bg)]' 
-                        : 'bg-gray-100 text-[var(--color-editorial-text)]'
+                        : 'bg-[var(--color-editorial-bg-alt)] text-[var(--color-editorial-text)]'
                     }`}
                   >
                      <div className="markdown-body">
@@ -116,7 +116,7 @@ export function AIChat() {
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-gray-100 text-[var(--color-editorial-text)] rounded-2xl px-4 py-3 flex gap-1 items-center">
+                  <div className="bg-[var(--color-editorial-bg-alt)] text-[var(--color-editorial-text)] rounded-2xl px-4 py-3 flex gap-1 items-center">
                     <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                     <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                     <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
@@ -126,7 +126,7 @@ export function AIChat() {
               <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={handleSubmit} className="p-3 border-t border-[var(--color-editorial-border)] bg-[#f8f9fa] flex gap-2">
+            <form onSubmit={handleSubmit} className="p-3 border-t border-[var(--color-editorial-border)] bg-[var(--color-editorial-bg-alt)] flex gap-2">
               <input
                 type="text"
                 value={input}

@@ -2,10 +2,11 @@ import { mockEvents, mockJurisdictions } from '../data/mock';
 import { EventCard } from '../components/EventCard';
 import { useStore } from '../store/useStore';
 import { Input } from '../components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, MapPin } from 'lucide-react';
 import { isAfter, parseISO } from 'date-fns';
 import { Layout } from '../components/Layout';
 import { Button } from '../components/ui/button';
+import { PollingStationMap } from '../components/PollingStationMap';
 
 export function Home() {
   const { searchQuery, setSearchQuery, selectedJurisdiction, setSelectedJurisdiction } = useStore();
@@ -58,6 +59,14 @@ export function Home() {
               ))}
             </select>
           </div>
+        </div>
+
+        <div className="mb-12">
+          <h3 className="font-serif text-2xl font-bold mb-4 text-[var(--color-editorial-text)] flex items-center gap-2">
+            <MapPin className="w-5 h-5" />
+            Find Your Polling Station
+          </h3>
+          <PollingStationMap jurisdiction={selectedJurisdiction} />
         </div>
       </div>
 
