@@ -59,6 +59,8 @@ function NotFound() {
   );
 }
 
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "./components/ui/accordion";
+
 function About() {
   return (
     <Layout>
@@ -80,24 +82,32 @@ function About() {
           </ul>
 
           <h2 className="text-2xl font-serif font-bold text-[var(--color-editorial-text)] mb-4 border-b border-[var(--color-editorial-border)] pb-2">Frequently Asked Questions</h2>
-          <div className="space-y-6 mb-12">
-            <div>
-               <h3 className="font-bold text-[var(--color-editorial-text)] mb-1">Is this an official government application?</h3>
-               <p>No, this is an independent, non-partisan educational tool summarizing public information.</p>
-            </div>
-             <div>
-               <h3 className="font-bold text-[var(--color-editorial-text)] mb-1">Do you collect my voter information?</h3>
-               <p>No. All progress tracking is stored locally on your device. We do not transmit or store your checklist data or personal information.</p>
-            </div>
-             <div>
-               <h3 className="font-bold text-[var(--color-editorial-text)] mb-1">How often is the data updated?</h3>
-               <p>The dates reflect the schedules published by the Election Commission. For definitive timings, always cross-reference official portals.</p>
-            </div>
-             <div>
-               <h3 className="font-bold text-[var(--color-editorial-text)] mb-1">Environmental Impact</h3>
-               <p>By completing civic processes digitally, you help reduce paper consumption across India's electoral system.</p>
-            </div>
-          </div>
+          <Accordion type="single" collapsible className="w-full mb-12">
+            <AccordionItem value="item-1">
+              <AccordionTrigger className="text-[var(--color-editorial-text)] font-bold text-lg hover:no-underline">Is this an official government application?</AccordionTrigger>
+              <AccordionContent className="text-[var(--color-editorial-muted)]">
+                No, this is an independent, non-partisan educational tool summarizing public information.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-2">
+              <AccordionTrigger className="text-[var(--color-editorial-text)] font-bold text-lg hover:no-underline">Do you collect my voter information?</AccordionTrigger>
+              <AccordionContent className="text-[var(--color-editorial-muted)]">
+                No. All progress tracking is stored locally on your device. We do not transmit or store your checklist data or personal information.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-3">
+              <AccordionTrigger className="text-[var(--color-editorial-text)] font-bold text-lg hover:no-underline">How often is the data updated?</AccordionTrigger>
+              <AccordionContent className="text-[var(--color-editorial-muted)]">
+                The dates reflect the schedules published by the Election Commission. For definitive timings, always cross-reference official portals.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-4">
+              <AccordionTrigger className="text-[var(--color-editorial-text)] font-bold text-lg hover:no-underline">Environmental Impact</AccordionTrigger>
+              <AccordionContent className="text-[var(--color-editorial-muted)]">
+                By completing civic processes digitally, you help reduce paper consumption across India's electoral system.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
 
           <div className="pt-8 border-t border-[var(--color-editorial-border)] text-[10px] uppercase tracking-widest font-bold">
             <p>Version 1.1.0 — Civic Open Source Initiative</p>

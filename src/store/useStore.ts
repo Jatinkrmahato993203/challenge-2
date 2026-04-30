@@ -15,6 +15,8 @@ interface StoreState {
   setLanguage: (lang: 'en' | 'hi') => void;
   simpleMode: boolean;
   toggleSimpleMode: () => void;
+  darkMode: boolean;
+  toggleDarkMode: () => void;
 }
 
 export const useStore = create<StoreState>()(
@@ -53,10 +55,27 @@ export const useStore = create<StoreState>()(
       language: 'en',
       setLanguage: (lang) => set({ language: lang }),
       simpleMode: false,
-      toggleSimpleMode: () => set((state) => ({ simpleMode: !state.simpleMode }))
+      toggleSimpleMode: () => set((state) => ({ simpleMode: !state.simpleMode })),
+      darkMode: false,
+      toggleDarkMode: () => set((state) => {
+        const nextMode = !state.darkMode;
+        if (nextMode) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        return { darkMode: nextMode };
+      })
     }),
     {
       name: 'civic-guide-store',
+      onRehydrateStorage: () => (state) => {
+        if (state?.darkMode) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
     }
   )
 );

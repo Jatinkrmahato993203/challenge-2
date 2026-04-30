@@ -8,6 +8,7 @@ import { Button } from '../components/ui/button';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { translations } from '../data/i18n';
+import confetti from 'canvas-confetti';
 
 export function WizardPage() {
   const { flowId } = useParams();
@@ -24,6 +25,14 @@ export function WizardPage() {
     window.scrollTo(0, 0);
     if (stepHeadingRef.current && !isFinished) {
       stepHeadingRef.current.focus();
+    }
+    if (isFinished) {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#16a34a', '#22c55e', '#4ade80']
+      });
     }
   }, [currentStepIndex, isFinished]);
 

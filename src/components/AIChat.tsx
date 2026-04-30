@@ -21,6 +21,7 @@ export function AIChat() {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -31,6 +32,37 @@ export function AIChat() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+      
+      if (e.key === 'Tab' && isOpen && modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll(
+          'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select'
+        );
+        const firstElement = focusableElements[0] as HTMLElement;
+        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+          }
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -77,11 +109,15 @@ export function AIChat() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            ref={modalRef}
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-6 right-6 w-[90vw] sm:w-[400px] h-[500px] max-h-[80vh] bg-[var(--color-editorial-bg)] border border-[var(--color-editorial-border)] shadow-2xl z-50 flex flex-col font-sans overflow-hidden"
+            className="fixed bottom-6 right-6 w-[90vw] sm:w-[400px] h-[500px] max-h-[80vh] bg-[var(--color-editorial-bg)] border border-[var(--color-editorial-border)] shadow-2xl z-50 flex flex-col font-sans overflow-hidden rounded-xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Civic Assistant AI Chat"
           >
             <div className="flex items-center justify-between p-4 border-b border-[var(--color-editorial-border)] bg-[var(--color-editorial-bg-alt)]">
               <div className="flex items-center gap-2">
@@ -93,7 +129,7 @@ export function AIChat() {
                   <p className="text-[10px] text-[var(--color-editorial-muted)] uppercase tracking-widest font-bold">Ask anything</p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 hover:bg-transparent hover:opacity-50">
+              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 hover:bg-transparent hover:opacity-50" aria-label="Close chat">
                 <X className="w-5 h-5" />
               </Button>
             </div>
@@ -135,7 +171,7 @@ export function AIChat() {
                 className="flex-1 bg-transparent border border-[var(--color-editorial-border)] rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[var(--color-editorial-text)] transition-colors placeholder:text-[var(--color-editorial-muted)]"
                 disabled={isLoading}
               />
-              <Button type="submit" size="icon" disabled={!input.trim() || isLoading} className="rounded-full w-10 h-10 bg-[var(--color-editorial-text)] text-[var(--color-editorial-bg)] flex-shrink-0">
+              <Button type="submit" size="icon" disabled={!input.trim() || isLoading} className="rounded-full w-10 h-10 bg-[var(--color-editorial-text)] text-[var(--color-editorial-bg)] flex-shrink-0" aria-label="Send message">
                 <Send className="w-4 h-4" />
               </Button>
             </form>
