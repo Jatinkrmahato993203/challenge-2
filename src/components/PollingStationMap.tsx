@@ -4,7 +4,7 @@ import { Input } from './ui/input';
 import { Search } from 'lucide-react';
 import { Button } from './ui/button';
 
-function MapInner({ jurisdiction }: { jurisdiction: string }) {
+function MapInner({ jurisdiction, jurisdictionName }: { jurisdiction: string, jurisdictionName?: string }) {
   const map = useMap();
   const geocodingLib = useMapsLibrary('geocoding');
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,7 +15,8 @@ function MapInner({ jurisdiction }: { jurisdiction: string }) {
     if (!geocodingLib || !map || !jurisdiction || jurisdiction === 'All') return;
     const geocoder = new geocodingLib.Geocoder();
     // Default to search within India context for better results
-    geocoder.geocode({ address: `${jurisdiction}, India` }, (results, status) => {
+    const searchBase = jurisdictionName || jurisdiction;
+    geocoder.geocode({ address: `${searchBase}, India` }, (results, status) => {
       if (status === 'OK' && results && results[0]) {
         map.setCenter(results[0].geometry.location);
         map.setZoom(6);
@@ -28,7 +29,7 @@ function MapInner({ jurisdiction }: { jurisdiction: string }) {
     e.preventDefault();
     if (!geocodingLib || !map || !searchQuery) return;
     const geocoder = new geocodingLib.Geocoder();
-    const searchArea = jurisdiction && jurisdiction !== 'All' ? `${searchQuery}, ${jurisdiction}, India` : `${searchQuery}, India`;
+    const searchArea = jurisdiction && jurisdiction !== 'All' ? `${searchQuery}, ${jurisdictionName || jurisdiction}, India` : `${searchQuery}, India`;
     geocoder.geocode({ address: searchArea }, (results, status) => {
       if (status === 'OK' && results && results[0]) {
         map.setCenter(results[0].geometry.location);
@@ -69,11 +70,10 @@ function MapInner({ jurisdiction }: { jurisdiction: string }) {
   );
 }
 
-export function PollingStationMap({ jurisdiction }: { jurisdiction: string }) {
+export function PollingStationMap({ jurisdiction, jurisdictionName }: { jurisdiction: string, jurisdictionName?: string }) {
   const [mapError, setMapError] = useState(false);
   // Using the provided API key explicitly as a fallback
-  // @ts-ignore
-  const envKey = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_GOOGLE_MAPS_KEY : undefined;
+  const envKey = import.meta.env.VITE_GOOGLE_MAPS_KEY as string | undefined;
   let apiKey = envKey || 'AIzaSyA5sJ9I8vUN2y3V6YEjDeNUWlGktr6O2Lc';
   if (apiKey && typeof apiKey === 'string') {
     apiKey = apiKey.replace(/^["']|["']$/g, '');
@@ -101,7 +101,7 @@ export function PollingStationMap({ jurisdiction }: { jurisdiction: string }) {
   return (
     <div className="border border-[var(--color-editorial-border)] rounded-lg overflow-hidden relative h-[400px]">
       <APIProvider apiKey={apiKey}>
-        <MapInner jurisdiction={jurisdiction} />
+        <MapInner jurisdiction={jurisdiction} jurisdictionName={jurisdictionName} />
       </APIProvider>
     </div>
   );

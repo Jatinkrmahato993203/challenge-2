@@ -34,6 +34,8 @@ export const translations = {
     simpleMode: 'Simple Mode',
     language: 'A / अ',
     optional: 'Optional',
+    step: 'Step',
+    guidedActionsSubtitle: 'Step-by-step wizards to help you complete necessary election actions smoothly and correctly.',
     shareSummary: (completed: number, total: number, title: string) => `I completed ${completed}/${total} steps for '${title}' on Civic Guide.`,
     eventContent: {
       'evt-1': { title: 'Draft Electoral Roll Publication', description: 'Publication of the draft electoral roll for the upcoming Special Summary Revision. Citizens can check their names and file claims/objections.' },
@@ -160,6 +162,8 @@ export const translations = {
     simpleMode: 'सरल मोड',
     language: 'A / अ',
     optional: 'वैकल्पिक',
+    step: 'चरण',
+    guidedActionsSubtitle: 'आवश्यक चुनाव कार्यों को सुचारू रूप से और सही ढंग से पूरा करने में आपकी सहायता के लिए चरण-दर-चरण विज़ार्ड।',
     shareSummary: (completed: number, total: number, title: string) => `मैंने सिविक गाइड पर '${title}' के लिए ${completed}/${total} चरण पूरे कर लिए हैं।`,
     eventContent: {
       'evt-1': { title: 'प्रारूप मतदाता सूची का प्रकाशन', description: 'आगामी विशेष संक्षिप्त पुनरीक्षण के लिए प्रारूप मतदाता सूची का प्रकाशन। नागरिक अपने नाम की जांच कर सकते हैं और दावे/आपत्तियां दर्ज कर सकते हैं।' },

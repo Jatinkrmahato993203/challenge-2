@@ -39,6 +39,14 @@
   }
 }
 
+.dark {
+  --color-editorial-bg: #111111;
+  --color-editorial-bg-alt: #1F1F1F;
+  --color-editorial-text: #EEEEEE;
+  --color-editorial-border: #333333;
+  --color-editorial-muted: #AAAAAA;
+}
+
 @media print {
   /* Set a white background and black text for print to save ink */
   :root {

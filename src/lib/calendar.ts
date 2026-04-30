@@ -1,6 +1,9 @@
 export function getGoogleCalendarUrl(event: any, href: string) {
   const start = new Date(event.startDate).toISOString().replace(/-|:|\.\d\d\d/g, "");
-  const end = new Date(new Date(event.endDate || event.startDate).getTime() + (event.endDate ? 0 : 86400000)).toISOString().replace(/-|:|\.\d\d\d/g, "");
+  const endTime = event.endDate
+    ? new Date(event.endDate).getTime() + 86400000
+    : new Date(event.startDate).getTime() + 86400000;
+  const end = new Date(endTime).toISOString().replace(/-|:|\.\d\d\d/g, "");
 
   const params = new URLSearchParams({
     action: "TEMPLATE",

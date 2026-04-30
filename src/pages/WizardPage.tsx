@@ -70,7 +70,7 @@ export function WizardPage() {
       }
     } else {
       await navigator.clipboard.writeText(summary);
-      toast.success('Porgress summary copied to clipboard!');
+      toast.success('Progress summary copied to clipboard!');
     }
   };
 
@@ -151,7 +151,7 @@ export function WizardPage() {
         <div className="mb-8 flex items-baseline justify-between border-b border-[var(--color-editorial-border)] pb-8 overflow-hidden">
           <div>
             <h1 className="text-5xl md:text-7xl font-serif font-black tracking-tighter text-[var(--color-editorial-text)]">
-              Step {String(currentStepIndex + 1).padStart(2, '0')}
+              {t.step} {String(currentStepIndex + 1).padStart(2, '0')}
             </h1>
             <p className="uppercase text-xs tracking-widest font-bold text-[var(--color-editorial-muted)] mt-4">
               {(t.flowContent as any)?.[flow.id]?.title || flow.title}

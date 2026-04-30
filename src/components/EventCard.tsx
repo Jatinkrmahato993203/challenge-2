@@ -81,7 +81,7 @@ export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent;
                   <CalendarDays className="w-3 h-3 ml-2" />
                 </a>
               </Button>
-              <Button asChild variant="outline" size="sm" onClick={() => {
+              <Button variant="outline" size="sm" onClick={() => {
                 const store = useStore.getState();
                 if ('Notification' in window) {
                   Notification.requestPermission().then(permission => {
@@ -92,10 +92,8 @@ export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent;
                   });
                 }
               }}>
-                <button>
-                   {t.remindMe}
-                   <AlertCircle className="w-3 h-3 ml-2" />
-                </button>
+                {t.remindMe}
+                <AlertCircle className="w-3 h-3 ml-2" />
               </Button>
             </div>
 

@@ -47,7 +47,8 @@ export default defineConfig(({mode}) => {
           manualChunks: {
             'google-maps': ['@vis.gl/react-google-maps'],
             'google-ai': ['@google/genai'],
-            'vendor': ['react', 'react-dom', 'react-router-dom']
+            'vendor': ['react', 'react-dom', 'react-router-dom'],
+            'motion': ['motion']
           }
         }
       }

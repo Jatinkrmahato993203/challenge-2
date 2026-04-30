@@ -1,8 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 import { mockEvents, mockFlows, mockJurisdictions } from "../data/mock";
 
-// @ts-ignore
-const ai = new GoogleGenAI({ apiKey: typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY : process.env.GEMINI_API_KEY });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
+if (!apiKey) console.warn('VITE_GEMINI_API_KEY is not set. AI chat will not work.');
+const ai = new GoogleGenAI({ apiKey: apiKey ?? '' });
 
 const systemInstruction = `You are the Civic Compass AI Assistant, an expert on Indian electoral processes. 
 You answer questions clearly, conversationally, and correctly.

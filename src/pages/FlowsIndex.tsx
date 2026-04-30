@@ -13,10 +13,10 @@ export function FlowsIndex() {
     <Layout>
       <div className="mb-8">
         <h2 className="font-serif italic text-4xl md:text-5xl mb-6 leading-tight">
-          Guided Actions
+          {t.guidedActions}
         </h2>
         <p className="text-sm font-medium text-[var(--color-editorial-muted)] max-w-2xl mb-8 uppercase tracking-widest">
-          Step-by-step wizards to help you complete necessary election actions smoothly and correctly.
+          {t.guidedActionsSubtitle}
         </p>
       </div>
 

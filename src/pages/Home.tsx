@@ -14,6 +14,7 @@ const PollingStationMap = React.lazy(() => import('../components/PollingStationM
 
 const TypewriterText = ({ text }: { text: string }) => {
   const [displayText, setDisplayText] = useState('');
+  const [isDone, setIsDone] = useState(false);
   
   useEffect(() => {
     let i = 0;
@@ -23,12 +24,13 @@ const TypewriterText = ({ text }: { text: string }) => {
         i++;
       } else {
         clearInterval(timer);
+        setIsDone(true);
       }
     }, 50);
     return () => clearInterval(timer);
   }, [text]);
 
-  return <span>{displayText}<span className="animate-pulse">|</span></span>;
+  return <span>{displayText}{!isDone && <span className="animate-pulse">|</span>}</span>;
 };
 
 export function Home() {
@@ -141,7 +143,7 @@ export function Home() {
           </div>
           <div className="md:w-64">
             <select 
-              className="flex h-10 w-full rounded-none border border-black bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black uppercase tracking-widest font-bold text-[10px]"
+              className="flex h-10 w-full rounded-none border border-[var(--color-editorial-border)] bg-[var(--color-editorial-bg)] text-[var(--color-editorial-text)] px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-editorial-text)] uppercase tracking-widest font-bold text-[10px]"
               value={selectedJurisdiction}
               onChange={(e) => setSelectedJurisdiction(e.target.value)}
               aria-label="Filter by Jurisdiction"
@@ -160,7 +162,7 @@ export function Home() {
             Find Your Polling Station
           </h3>
           <Suspense fallback={<div className="w-full h-[400px] bg-[var(--color-editorial-bg-alt)] border border-[var(--color-editorial-border)] animate-pulse rounded-lg" />}>
-            <PollingStationMap jurisdiction={selectedJurisdiction} />
+            <PollingStationMap jurisdiction={selectedJurisdiction} jurisdictionName={mockJurisdictions.find(j => j.id === selectedJurisdiction)?.name} />
           </Suspense>
         </div>
       </div>
