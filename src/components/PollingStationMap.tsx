@@ -74,7 +74,7 @@ export function PollingStationMap({ jurisdiction, jurisdictionName }: { jurisdic
   const [mapError, setMapError] = useState(false);
   // Using the provided API key explicitly as a fallback
   const envKey = import.meta.env.VITE_GOOGLE_MAPS_KEY as string | undefined;
-  let apiKey = envKey || 'AIzaSyA5sJ9I8vUN2y3V6YEjDeNUWlGktr6O2Lc';
+  let apiKey = envKey || 'AIzaSyDH_l_ycjdHDRRkl4ubLDdrM1gz5m3179w';
   if (apiKey && typeof apiKey === 'string') {
     apiKey = apiKey.replace(/^["']|["']$/g, '');
   }

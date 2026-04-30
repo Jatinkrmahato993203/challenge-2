@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MessageSquare, X, Send, Bot } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, Sparkles } from 'lucide-react';
 import { Button } from './ui/button';
 import { submitChatMessage } from '../services/geminiService';
 import Markdown from 'react-markdown';
@@ -96,11 +96,14 @@ export function AIChat() {
           >
             <Button 
               size="lg" 
-              className="rounded-full w-14 h-14 shadow-xl bg-[var(--color-editorial-text)] text-[var(--color-editorial-bg)] hover:bg-[var(--color-editorial-muted)]"
+              className="rounded-full w-14 h-14 shadow-xl bg-gradient-to-br from-[#FF9933] via-white to-[#138808] border-2 border-white hover:opacity-90 relative overflow-visible group"
               onClick={() => setIsOpen(true)}
               aria-label="Open AI Civic Assistant"
             >
-              <MessageSquare className="w-6 h-6" />
+              <Bot className="w-6 h-6 text-[#000080]" strokeWidth={2.5} />
+              <div className="absolute -top-1 -right-1 bg-[#000080] rounded-full w-4 h-4 flex items-center justify-center animate-bounce shadow">
+                <Sparkles className="w-2.5 h-2.5 text-white" />
+              </div>
             </Button>
           </motion.div>
         )}
@@ -121,8 +124,8 @@ export function AIChat() {
           >
             <div className="flex items-center justify-between p-4 border-b border-[var(--color-editorial-border)] bg-[var(--color-editorial-bg-alt)]">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[var(--color-editorial-text)] text-[var(--color-editorial-bg)] flex items-center justify-center">
-                  <Bot className="w-4 h-4" />
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FF9933] via-white to-[#138808] flex items-center justify-center border border-gray-200">
+                  <Bot className="w-4 h-4 text-[#000080]" strokeWidth={2.5} />
                 </div>
                 <div>
                   <h3 className="font-bold text-sm tracking-tight text-[var(--color-editorial-text)]">Civic Assistant</h3>

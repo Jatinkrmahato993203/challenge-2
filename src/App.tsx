@@ -82,7 +82,7 @@ function About() {
           </ul>
 
           <h2 className="text-2xl font-serif font-bold text-[var(--color-editorial-text)] mb-4 border-b border-[var(--color-editorial-border)] pb-2">Frequently Asked Questions</h2>
-          <Accordion type="single" collapsible className="w-full mb-12">
+          <Accordion className="w-full mb-12">
             <AccordionItem value="item-1">
               <AccordionTrigger className="text-[var(--color-editorial-text)] font-bold text-lg hover:no-underline">Is this an official government application?</AccordionTrigger>
               <AccordionContent className="text-[var(--color-editorial-muted)]">
