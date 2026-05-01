@@ -1,108 +1,138 @@
-import React, { useState, useEffect } from 'react';
-import { APIProvider, Map, useMap, useMapsLibrary, AdvancedMarker } from "@vis.gl/react-google-maps";
+import React, { useState, useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
+import L from 'leaflet';
 import { Input } from './ui/input';
 import { Search } from 'lucide-react';
 import { Button } from './ui/button';
+import 'leaflet/dist/leaflet.css';
 
-function MapInner({ jurisdiction, jurisdictionName }: { jurisdiction: string, jurisdictionName?: string }) {
+// Fix Leaflet default marker icons broken by Vite's asset pipeline
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
+
+// India center
+const INDIA_CENTER: [number, number] = [20.5937, 78.9629];
+const INDIA_ZOOM = 5;
+
+// Inner component — has access to the map instance via hook
+function MapController({
+  target,
+}: {
+  target: { lat: number; lng: number; zoom: number } | null;
+}) {
   const map = useMap();
-  const geocodingLib = useMapsLibrary('geocoding');
+  useEffect(() => {
+    if (target) {
+      map.flyTo([target.lat, target.lng], target.zoom, { duration: 1 });
+    }
+  }, [map, target]);
+  return null;
+}
+
+async function geocodeWithNominatim(query: string): Promise<{ lat: number; lng: number } | null> {
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=in`;
+    const res = await fetch(url, {
+      headers: { 'Accept-Language': 'en', 'User-Agent': 'CivicGuide/1.0' },
+    });
+    const data = await res.json();
+    if (data && data.length > 0) {
+      return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+    }
+  } catch (e) {
+    console.error('[PollingStationMap] Nominatim geocode failed:', e);
+  }
+  return null;
+}
+
+export function PollingStationMap({
+  jurisdiction,
+  jurisdictionName,
+}: {
+  jurisdiction: string;
+  jurisdictionName?: string;
+}) {
+  const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
+  const [target, setTarget] = useState<{ lat: number; lng: number; zoom: number } | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [markerPos, setMarkerPos] = useState<google.maps.LatLngLiteral | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
 
   // Pan to jurisdiction when it changes
   useEffect(() => {
-    if (!geocodingLib || !map || !jurisdiction || jurisdiction === 'All') return;
-    const geocoder = new geocodingLib.Geocoder();
-    // Default to search within India context for better results
+    if (!jurisdiction || jurisdiction === 'All') {
+      setTarget(null);
+      setMarkerPos(null);
+      return;
+    }
     const searchBase = jurisdictionName || jurisdiction;
-    geocoder.geocode({ address: `${searchBase}, India` }, (results, status) => {
-      if (status === 'OK' && results && results[0]) {
-        map.setCenter(results[0].geometry.location);
-        map.setZoom(6);
-        setMarkerPos(results[0].geometry.location.toJSON());
+    geocodeWithNominatim(`${searchBase}, India`).then((pos) => {
+      if (pos) {
+        setTarget({ ...pos, zoom: 6 });
+        setMarkerPos([pos.lat, pos.lng]);
       }
     });
-  }, [geocodingLib, map, jurisdiction]);
+  }, [jurisdiction, jurisdictionName]);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!geocodingLib || !map || !searchQuery) return;
-    const geocoder = new geocodingLib.Geocoder();
-    const searchArea = jurisdiction && jurisdiction !== 'All' ? `${searchQuery}, ${jurisdictionName || jurisdiction}, India` : `${searchQuery}, India`;
-    geocoder.geocode({ address: searchArea }, (results, status) => {
-      if (status === 'OK' && results && results[0]) {
-        map.setCenter(results[0].geometry.location);
-        map.setZoom(15);
-        setMarkerPos(results[0].geometry.location.toJSON());
-      }
-    });
+    if (!searchQuery) return;
+    setIsSearching(true);
+    const searchArea =
+      jurisdiction && jurisdiction !== 'All'
+        ? `${searchQuery}, ${jurisdictionName || jurisdiction}, India`
+        : `${searchQuery}, India`;
+    const pos = await geocodeWithNominatim(searchArea);
+    setIsSearching(false);
+    if (pos) {
+      setTarget({ ...pos, zoom: 15 });
+      setMarkerPos([pos.lat, pos.lng]);
+    }
   };
 
   return (
-    <>
-      <div className="absolute top-4 left-4 right-4 z-10 pointer-events-none">
-        <form onSubmit={handleSearch} className="flex gap-2 p-2 rounded-lg pointer-events-auto w-full max-w-sm">
-          <Input 
-            type="text" 
+    <div className="border border-[var(--color-editorial-border)] rounded-lg overflow-hidden relative h-[400px]">
+      {/* Search bar overlay */}
+      <div className="absolute top-4 left-4 right-4 z-[1000] pointer-events-none">
+        <form
+          onSubmit={handleSearch}
+          className="flex gap-2 p-2 rounded-lg pointer-events-auto w-full max-w-sm"
+        >
+          <Input
+            type="text"
             placeholder="Search specific address..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="flex-1 bg-white/95 backdrop-blur shadow-md h-10 border-[var(--color-editorial-border)]"
           />
-          <Button type="submit" size="icon" className="shrink-0 h-10 w-10 shadow-md bg-[var(--color-editorial-text)] text-[var(--color-editorial-bg)] hover:bg-[var(--color-editorial-muted)]">
+          <Button
+            type="submit"
+            size="icon"
+            disabled={isSearching}
+            className="shrink-0 h-10 w-10 shadow-md bg-[var(--color-editorial-text)] text-[var(--color-editorial-bg)] hover:bg-[var(--color-editorial-muted)]"
+          >
             <Search className="h-4 w-4" />
           </Button>
         </form>
       </div>
 
-      <Map
-        defaultCenter={{ lat: 20.5937, lng: 78.9629 }}
-        defaultZoom={5}
-        mapId="DEMO_MAP_ID"
-        gestureHandling={'greedy'}
-        disableDefaultUI={true}
-        style={{ width: "100%", height: "100%" }}
+      <MapContainer
+        center={INDIA_CENTER}
+        zoom={INDIA_ZOOM}
+        style={{ width: '100%', height: '100%' }}
+        zoomControl={false}
+        attributionControl={true}
       >
-        {markerPos && <AdvancedMarker position={markerPos} />}
-      </Map>
-    </>
-  );
-}
-
-export function PollingStationMap({ jurisdiction, jurisdictionName }: { jurisdiction: string, jurisdictionName?: string }) {
-  const [mapError, setMapError] = useState(false);
-  // Using the provided API key explicitly as a fallback
-  const envKey = import.meta.env.VITE_GOOGLE_MAPS_KEY as string | undefined;
-  let apiKey = envKey || 'AIzaSyDH_l_ycjdHDRRkl4ubLDdrM1gz5m3179w';
-  if (apiKey && typeof apiKey === 'string') {
-    apiKey = apiKey.replace(/^["']|["']$/g, '');
-  }
-
-  useEffect(() => {
-    // Catch Google Maps authentication failures (e.g., restricted or invalid keys)
-    (window as any).gm_authFailure = () => {
-      setMapError(true);
-    };
-  }, []);
-
-  if (!apiKey || mapError) {
-    return (
-      <div className="w-full h-[400px] border border-[var(--color-editorial-border)] bg-[var(--color-editorial-bg-alt)] flex flex-col items-center justify-center p-4 text-center rounded-lg">
-        <p className="text-[var(--color-editorial-muted)] text-sm mb-2">
-          {!apiKey 
-            ? "Map is unavailable. Please set VITE_GOOGLE_MAPS_KEY to view polling stations."
-            : "Google Maps failed to load. The provided API key might be invalid or missing the Maps JavaScript API permission."}
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="border border-[var(--color-editorial-border)] rounded-lg overflow-hidden relative h-[400px]">
-      <APIProvider apiKey={apiKey}>
-        <MapInner jurisdiction={jurisdiction} jurisdictionName={jurisdictionName} />
-      </APIProvider>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        <MapController target={target} />
+        {markerPos && <Marker position={markerPos} />}
+      </MapContainer>
     </div>
   );
 }
