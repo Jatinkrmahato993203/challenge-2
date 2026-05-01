@@ -1,14 +1,15 @@
 import { VitePWA } from 'vite-plugin-pwa';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import { visualizer } from 'rollup-plugin-visualizer';
 import path from 'path';
-import {defineConfig, loadEnv} from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
-export default defineConfig(({mode}) => {
+export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
   return {
     plugins: [
-      react(), 
+      react(),
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
@@ -24,34 +25,40 @@ export default defineConfig(({mode}) => {
             {
               src: 'pwa-192x192.png',
               sizes: '192x192',
-              type: 'image/png'
-            },
-            {
-              src: 'pwa-512x512.png',
-              sizes: '512x512',
-              type: 'image/png'
+              type: 'image/png',
             },
             {
               src: 'pwa-512x512.png',
               sizes: '512x512',
               type: 'image/png',
-              purpose: 'any maskable'
-            }
-          ]
-        }
-      })
+            },
+            {
+              src: 'pwa-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'any maskable',
+            },
+          ],
+        },
+      }),
+      // Bundle analysis — generates stats.html on build
+      visualizer({
+        filename: 'stats.html',
+        open: false,
+        gzipSize: true,
+        brotliSize: true,
+      }),
     ],
     build: {
       rollupOptions: {
         output: {
           manualChunks: {
-            'google-maps': ['@vis.gl/react-google-maps'],
             'google-ai': ['@google/genai'],
-            'vendor': ['react', 'react-dom', 'react-router-dom'],
-            'motion': ['motion']
-          }
-        }
-      }
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            motion: ['motion'],
+          },
+        },
+      },
     },
     resolve: {
       alias: {

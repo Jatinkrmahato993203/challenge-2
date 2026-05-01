@@ -8,7 +8,14 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "lint:eslint": "eslint src/",
+    "lint:all": "tsc --noEmit && eslint src/",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
+    "knip": "knip",
+    "analyze": "vite build && echo 'Open stats.html to view bundle treemap'",
+    "prepare": "husky"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
@@ -41,12 +48,24 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^22.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.59.1",
+    "@typescript-eslint/parser": "^8.59.1",
     "autoprefixer": "^10.4.21",
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "husky": "^9.1.7",
+    "knip": "^6.10.0",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.3",
+    "rollup-plugin-visualizer": "^7.0.1",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
     "vite": "^6.2.0",
-    "vite-plugin-pwa": "^0.19.8"
+    "vite-plugin-pwa": "^1.2.0"
   }
 }
