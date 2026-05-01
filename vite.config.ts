@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
           short_name: 'CivicGuide',
           description: 'Navigate election processes with confidence.',
           theme_color: '#ffffff',
-          start_url: '/',
+          start_url: '/#/',
           display: 'standalone',
           icons: [
             {
@@ -56,6 +56,8 @@ export default defineConfig(({ mode }) => {
             'google-ai': ['@google/genai'],
             vendor: ['react', 'react-dom', 'react-router-dom'],
             motion: ['motion'],
+            markdown: ['react-markdown'],
+            confetti: ['canvas-confetti'],
           },
         },
       },

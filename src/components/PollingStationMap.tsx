@@ -4,7 +4,6 @@ import L from 'leaflet';
 import { Input } from './ui/input';
 import { Search } from 'lucide-react';
 import { Button } from './ui/button';
-import 'leaflet/dist/leaflet.css';
 
 // Fix Leaflet default marker icons broken by Vite's asset pipeline
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -33,11 +32,13 @@ function MapController({
   return null;
 }
 
-async function geocodeWithNominatim(query: string): Promise<{ lat: number; lng: number } | null> {
+// eslint-disable-next-line no-undef
+async function geocodeWithNominatim(query: string, signal?: AbortSignal): Promise<{ lat: number; lng: number } | null> {
   try {
     const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=in`;
     const res = await fetch(url, {
       headers: { 'Accept-Language': 'en', 'User-Agent': 'CivicGuide/1.0' },
+      signal,
     });
     const data = await res.json();
     if (data && data.length > 0) {
@@ -60,26 +61,34 @@ export function PollingStationMap({
   const [target, setTarget] = useState<{ lat: number; lng: number; zoom: number } | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState('');
 
   // Pan to jurisdiction when it changes
   useEffect(() => {
     if (!jurisdiction || jurisdiction === 'All') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTarget(null);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMarkerPos(null);
       return;
     }
-    const searchBase = jurisdictionName || jurisdiction;
-    geocodeWithNominatim(`${searchBase}, India`).then((pos) => {
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      const searchBase = jurisdictionName || jurisdiction;
+      const pos = await geocodeWithNominatim(`${searchBase}, India`, controller.signal);
       if (pos) {
         setTarget({ ...pos, zoom: 6 });
         setMarkerPos([pos.lat, pos.lng]);
       }
-    });
+    }, 400);
+
+    return () => { clearTimeout(timer); controller.abort(); };
   }, [jurisdiction, jurisdictionName]);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery) return;
+    setSearchError('');
     setIsSearching(true);
     const searchArea =
       jurisdiction && jurisdiction !== 'All'
@@ -90,6 +99,8 @@ export function PollingStationMap({
     if (pos) {
       setTarget({ ...pos, zoom: 15 });
       setMarkerPos([pos.lat, pos.lng]);
+    } else {
+      setSearchError('Location not found. Try a more specific address.');
     }
   };
 
@@ -106,7 +117,7 @@ export function PollingStationMap({
             placeholder="Search specific address..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-white/95 backdrop-blur shadow-md h-10 border-[var(--color-editorial-border)]"
+            className="flex-1 bg-[var(--color-editorial-bg)]/95 backdrop-blur shadow-md h-10 border-[var(--color-editorial-border)]"
           />
           <Button
             type="submit"
@@ -117,6 +128,9 @@ export function PollingStationMap({
             <Search className="h-4 w-4" />
           </Button>
         </form>
+        {searchError && (
+          <p className="text-xs text-red-600 mt-1 px-2">{searchError}</p>
+        )}
       </div>
 
       <MapContainer

@@ -4,6 +4,7 @@ import App from './App.tsx';
 import './index.css';
 import { initSentry } from './lib/sentry';
 import { reportWebVitals } from './lib/webVitals';
+import 'leaflet/dist/leaflet.css';
 
 // Initialize error tracking (requires VITE_SENTRY_DSN env var)
 initSentry();
@@ -23,3 +24,11 @@ createRoot(document.getElementById('root')!).render(
 
 // Report Core Web Vitals (LCP, FID, CLS, FCP, TTFB, INP)
 reportWebVitals();
+
+const reminders = JSON.parse(localStorage.getItem('civic-reminders') || '[]');
+const now = new Date();
+reminders.forEach((r: any) => {
+  if (new Date(r.remindAt) <= now && Notification.permission === 'granted') {
+    new Notification(`📅 Reminder: ${r.title} is coming up!`);
+  }
+});
