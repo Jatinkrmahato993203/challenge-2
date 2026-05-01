@@ -1,3 +1,6 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import storybook from 'eslint-plugin-storybook';
+
 import js from '@eslint/js';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
@@ -7,9 +10,7 @@ import prettier from 'eslint-config-prettier';
 
 export default [
   // Base JS recommended rules
-  js.configs.recommended,
-
-  // TypeScript files
+  js.configs.recommended, // TypeScript files
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
@@ -100,13 +101,28 @@ export default [
       'no-duplicate-imports': 'error',
       'prefer-const': 'warn',
     },
-  },
-
-  // Prettier compat — disables formatting rules that conflict
-  prettier,
-
-  // Ignore patterns
+  }, // Prettier compat — disables formatting rules that conflict
+  prettier, // Ignore patterns
   {
-    ignores: ['dist/', 'node_modules/', 'build/', 'coverage/', '*.config.js', '*.config.ts'],
+    ignores: ['dist/', 'node_modules/', 'build/', 'coverage/'],
   },
+  {
+    files: [
+      '*.config.js',
+      '*.config.ts',
+      'lighthouserc.js',
+      'playwright.config.ts',
+      'vitest.config.ts',
+    ],
+    languageOptions: {
+      globals: {
+        process: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+      },
+    },
+  },
+  ...storybook.configs['flat/recommended'],
 ];

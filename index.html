@@ -6,11 +6,32 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_ID%"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag() {
+        dataLayer.push(arguments);
+      }
       gtag('js', new Date());
       gtag('config', '%VITE_GA_ID%');
     </script>
-    <meta name="description" content="An interactive, non-partisan assistant designed to help voters understand election processes, timelines, and actionable steps." />
+    <!-- Hotjar Tracking Code -->
+    <script>
+      (function (h, o, t, j, a, r) {
+        h.hj =
+          h.hj ||
+          function () {
+            (h.hj.q = h.hj.q || []).push(arguments);
+          };
+        h._hjSettings = { hjid: '%VITE_HOTJAR_ID%', hjsv: 6 };
+        a = o.getElementsByTagName('head')[0];
+        r = o.createElement('script');
+        r.async = 1;
+        r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+        a.appendChild(r);
+      })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+    </script>
+    <meta
+      name="description"
+      content="An interactive, non-partisan assistant designed to help voters understand election processes, timelines, and actionable steps."
+    />
     <meta name="theme-color" content="#ffffff" />
     <meta property="og:title" content="Civic Guide" />
     <meta property="og:description" content="Navigate election processes with confidence." />
@@ -26,4 +47,3 @@
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
