@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { translations } from '../data/i18n';
 import { getGoogleCalendarUrl } from '../lib/calendar';
+import { toast } from 'sonner';
 
 function HighlightedText({ text, highlight }: { text: string; highlight: string }) {
   if (!highlight.trim()) {
@@ -87,7 +88,12 @@ export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent;
                   Notification.requestPermission().then(permission => {
                     store.requestNotificationPermission();
                     if(permission === 'granted'){
-                        new Notification('Reminders turned on for ' + event.title);
+                        const remindAt = new Date(event.startDate);
+                        remindAt.setDate(remindAt.getDate() - 3); // 3 days before
+                        const reminders = JSON.parse(localStorage.getItem('civic-reminders') || '[]');
+                        reminders.push({ eventId: event.id, title: ((t.eventContent as any)?.[event.id]?.title || event.title), remindAt: remindAt.toISOString() });
+                        localStorage.setItem('civic-reminders', JSON.stringify(reminders));
+                        toast.success(`Reminder set for ${format(remindAt, 'MMM dd')}`);
                     }
                   });
                 }

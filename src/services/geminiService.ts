@@ -5,6 +5,18 @@ const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
 if (!apiKey) console.warn('VITE_GEMINI_API_KEY is not set. AI chat will not work.');
 const ai = new GoogleGenAI({ apiKey: apiKey ?? '' });
 
+const slimContext = {
+  jurisdictions: mockJurisdictions.map(j => ({ id: j.id, name: j.name })),
+  events: mockEvents.map(e => ({
+    id: e.id, title: e.title, type: e.type,
+    date: e.startDate, jurisdiction: e.jurisdiction
+  })),
+  flows: Object.values(mockFlows).map(f => ({
+    id: f.id, title: f.title,
+    steps: f.steps.length
+  }))
+};
+
 const systemInstruction = `You are the Civic Compass AI Assistant, an expert on Indian electoral processes. 
 You answer questions clearly, conversationally, and correctly.
 When asked about state deadlines, look at the events and jurisdictions info provided. 
@@ -13,9 +25,7 @@ Keep responses concise, formatted warmly but officially, and emphasize that user
 If they ask about something not in your data, explain honestly what you can tell them based on general ECI guidelines.
 
 Here is the context of app data:
-Jurisdictions: ${JSON.stringify(mockJurisdictions, null, 2)}
-Events & Deadlines: ${JSON.stringify(mockEvents, null, 2)}
-Guided Actions (Flows / Documents Required): ${JSON.stringify(mockFlows, null, 2)}
+${JSON.stringify(slimContext)}
 `;
 
 export async function submitChatMessage(

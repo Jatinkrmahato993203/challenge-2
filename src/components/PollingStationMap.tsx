@@ -10,6 +10,8 @@ function MapInner({ jurisdiction, jurisdictionName }: { jurisdiction: string, ju
   const [searchQuery, setSearchQuery] = useState('');
   const [markerPos, setMarkerPos] = useState<google.maps.LatLngLiteral | null>(null);
 
+  const [searchError, setSearchError] = useState('');
+
   // Pan to jurisdiction when it changes
   useEffect(() => {
     if (!geocodingLib || !map || !jurisdiction || jurisdiction === 'All') return;
@@ -27,6 +29,7 @@ function MapInner({ jurisdiction, jurisdictionName }: { jurisdiction: string, ju
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    setSearchError('');
     if (!geocodingLib || !map || !searchQuery) return;
     const geocoder = new geocodingLib.Geocoder();
     const searchArea = jurisdiction && jurisdiction !== 'All' ? `${searchQuery}, ${jurisdictionName || jurisdiction}, India` : `${searchQuery}, India`;
@@ -35,6 +38,8 @@ function MapInner({ jurisdiction, jurisdictionName }: { jurisdiction: string, ju
         map.setCenter(results[0].geometry.location);
         map.setZoom(15);
         setMarkerPos(results[0].geometry.location.toJSON());
+      } else {
+        setSearchError('Location not found. Try a more specific address.');
       }
     });
   };
@@ -42,17 +47,22 @@ function MapInner({ jurisdiction, jurisdictionName }: { jurisdiction: string, ju
   return (
     <>
       <div className="absolute top-4 left-4 right-4 z-10 pointer-events-none">
-        <form onSubmit={handleSearch} className="flex gap-2 p-2 rounded-lg pointer-events-auto w-full max-w-sm">
-          <Input 
-            type="text" 
-            placeholder="Search specific address..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-white/95 backdrop-blur shadow-md h-10 border-[var(--color-editorial-border)]"
-          />
-          <Button type="submit" size="icon" className="shrink-0 h-10 w-10 shadow-md bg-[var(--color-editorial-text)] text-[var(--color-editorial-bg)] hover:bg-[var(--color-editorial-muted)]">
-            <Search className="h-4 w-4" />
-          </Button>
+        <form onSubmit={handleSearch} className="flex flex-col gap-1 pointer-events-auto w-full max-w-sm">
+          <div className="flex gap-2 p-2 rounded-lg bg-[var(--color-editorial-bg)]/95 backdrop-blur shadow-md border-[var(--color-editorial-border)]">
+            <Input 
+              type="text" 
+              placeholder="Search specific address..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex-1 bg-transparent border-none focus-visible:ring-0 shadow-none h-10"
+            />
+            <Button type="submit" size="icon" className="shrink-0 h-10 w-10 shadow-md bg-[var(--color-editorial-text)] text-[var(--color-editorial-bg)] hover:bg-[var(--color-editorial-muted)]">
+              <Search className="h-4 w-4" />
+            </Button>
+          </div>
+          {searchError && (
+            <p className="text-xs text-red-600 px-2 py-1 bg-white/90 rounded font-bold shadow-sm self-start">{searchError}</p>
+          )}
         </form>
       </div>
 
