@@ -1,5 +1,4 @@
 import { format, parseISO } from 'date-fns';
-import { toast } from 'sonner';
 import { ElectionEvent } from '../types';
 import { CalendarDays, AlertCircle, ArrowRight, ExternalLink } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -88,12 +87,7 @@ export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent;
                   Notification.requestPermission().then(permission => {
                     store.requestNotificationPermission();
                     if(permission === 'granted'){
-                        const remindAt = new Date(event.startDate);
-                        remindAt.setDate(remindAt.getDate() - 3); // 3 days before
-                        const reminders = JSON.parse(localStorage.getItem('civic-reminders') || '[]');
-                        reminders.push({ eventId: event.id, title: event.title, remindAt: remindAt.toISOString() });
-                        localStorage.setItem('civic-reminders', JSON.stringify(reminders));
-                        toast.success(`Reminder set for ${format(remindAt, 'MMM dd')}`);
+                        new Notification('Reminders turned on for ' + event.title);
                     }
                   });
                 }

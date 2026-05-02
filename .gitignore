@@ -6,13 +6,3 @@ coverage/
 *.log
 .env*
 !.env.example
-stats.html
-
-# Test outputs
-test-results/
-playwright-report/
-blob-report/
-.lighthouseci/
-
-*storybook.log
-storybook-static

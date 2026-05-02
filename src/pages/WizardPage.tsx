@@ -20,15 +20,13 @@ export function WizardPage() {
   const [showNextWarning, setShowNextWarning] = useState(false);
   const [hasToastedSave, setHasToastedSave] = useState(false);
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
-  const confettiFired = useRef(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     if (stepHeadingRef.current && !isFinished) {
       stepHeadingRef.current.focus();
     }
-    if (isFinished && !confettiFired.current) {
-      confettiFired.current = true;
+    if (isFinished) {
       confetti({
         particleCount: 150,
         spread: 70,

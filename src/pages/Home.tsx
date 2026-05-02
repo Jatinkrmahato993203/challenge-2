@@ -135,7 +135,7 @@ export function Home() {
           <div className="flex-1">
             <Input 
               icon={<Search className="w-4 h-4" />}
-              className="rounded-none border-[var(--color-editorial-border)] focus-visible:ring-[var(--color-editorial-text)]"
+              className="rounded-none border-black focus-visible:ring-black"
               placeholder="Search events, deadlines..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
