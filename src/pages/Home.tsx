@@ -8,9 +8,6 @@ import { isAfter, parseISO, formatDistanceToNow } from 'date-fns';
 import { Layout } from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { motion, AnimatePresence } from 'motion/react';
-import CountUp from 'react-countup';
-
-const PollingStationMap = React.lazy(() => import('../components/PollingStationMap').then(m => ({ default: m.PollingStationMap })));
 
 const TypewriterText = ({ text }: { text: string }) => {
   const [displayText, setDisplayText] = useState('');
@@ -104,28 +101,28 @@ export function Home() {
           <div className="text-center">
             <Users className="w-5 h-5 mx-auto mb-2 text-[var(--color-editorial-muted)]" />
             <div className="text-3xl font-serif font-bold text-[var(--color-editorial-text)]">
-              <CountUp end={96} duration={2.5} suffix="Cr+" enableScrollSpy scrollSpyOnce />
+              96Cr+
             </div>
             <div className="text-[10px] uppercase tracking-widest font-bold text-[var(--color-editorial-muted)] mt-1">Eligible Voters</div>
           </div>
           <div className="text-center">
             <MapPin className="w-5 h-5 mx-auto mb-2 text-[var(--color-editorial-muted)]" />
             <div className="text-3xl font-serif font-bold text-[var(--color-editorial-text)]">
-              <CountUp end={10.5} decimals={1} duration={2.5} suffix="L+" enableScrollSpy scrollSpyOnce />
+              10.5L+
             </div>
             <div className="text-[10px] uppercase tracking-widest font-bold text-[var(--color-editorial-muted)] mt-1">Polling Stations</div>
           </div>
           <div className="text-center">
              <FileText className="w-5 h-5 mx-auto mb-2 text-[var(--color-editorial-muted)]" />
              <div className="text-3xl font-serif font-bold text-[var(--color-editorial-text)]">
-              <CountUp end={543} duration={2.5} enableScrollSpy scrollSpyOnce />
+              543
              </div>
              <div className="text-[10px] uppercase tracking-widest font-bold text-[var(--color-editorial-muted)] mt-1">Constituencies</div>
           </div>
           <div className="text-center">
              <CheckCircle className="w-5 h-5 mx-auto mb-2 text-[var(--color-editorial-muted)]" />
              <div className="text-3xl font-serif font-bold text-[var(--color-editorial-text)]">
-              <CountUp end={100} duration={2.5} suffix="%" enableScrollSpy scrollSpyOnce />
+              100%
              </div>
              <div className="text-[10px] uppercase tracking-widest font-bold text-[var(--color-editorial-muted)] mt-1">Verified EVMs</div>
           </div>
@@ -154,16 +151,6 @@ export function Home() {
               ))}
             </select>
           </div>
-        </div>
-
-        <div className="mb-12 print:hidden">
-          <h3 className="font-serif text-2xl font-bold mb-4 text-[var(--color-editorial-text)] flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
-            Find Your Polling Station
-          </h3>
-          <Suspense fallback={<div className="w-full h-[400px] bg-[var(--color-editorial-bg-alt)] border border-[var(--color-editorial-border)] animate-pulse rounded-lg" />}>
-            <PollingStationMap jurisdiction={selectedJurisdiction} jurisdictionName={mockJurisdictions.find(j => j.id === selectedJurisdiction)?.name} />
-          </Suspense>
         </div>
       </div>
 

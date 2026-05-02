@@ -28,6 +28,12 @@ Civic Guide is an interactive, non-partisan progressive web app (PWA) designed t
 To install and run the code on the web platform run:
 
 ```bash
-npm install
+npm install --force
 npm run dev
 ```
+
+> **Note**: `npm install --force` is currently required due to peer-dependency conflicts with React 19.
+
+## CI/CD Pipeline
+
+This project uses a GitHub Actions workflow located in `.github/workflows/ci.yml` which validates that dependabot PRs and incoming merges pass linting and the build process.

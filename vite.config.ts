@@ -45,7 +45,6 @@ export default defineConfig(({mode}) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            'google-maps': ['@vis.gl/react-google-maps'],
             'google-ai': ['@google/genai'],
             'vendor': ['react', 'react-dom', 'react-router-dom'],
             'motion': ['motion'],

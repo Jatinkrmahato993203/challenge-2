@@ -13,7 +13,8 @@ function HighlightedText({ text, highlight }: { text: string; highlight: string 
   if (!highlight.trim()) {
     return <span>{text}</span>;
   }
-  const regex = new RegExp(`(${highlight})`, 'i');
+  const escaped = highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(${escaped})`, 'i');
   const parts = text.split(regex);
   return (
     <span>
@@ -27,7 +28,7 @@ function HighlightedText({ text, highlight }: { text: string; highlight: string 
 export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent; isUpcoming?: boolean; isPast?: boolean }) {
   const isDeadline = event.type === 'deadline' || event.type === 'registration';
   const start = parseISO(event.startDate);
-  const { searchQuery, language } = useStore();
+  const { searchQuery, language, requestNotificationPermission } = useStore();
   const t = translations[language];
   
   return (
@@ -83,10 +84,9 @@ export function EventCard({ event, isUpcoming, isPast }: { event: ElectionEvent;
                 </a>
               </Button>
               <Button variant="outline" size="sm" onClick={() => {
-                const store = useStore.getState();
                 if ('Notification' in window) {
                   Notification.requestPermission().then(permission => {
-                    store.requestNotificationPermission();
+                    requestNotificationPermission();
                     if(permission === 'granted'){
                         const remindAt = new Date(event.startDate);
                         remindAt.setDate(remindAt.getDate() - 3); // 3 days before

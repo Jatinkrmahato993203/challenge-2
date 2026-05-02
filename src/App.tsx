@@ -59,8 +59,6 @@ function NotFound() {
   );
 }
 
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "./components/ui/accordion";
-
 function About() {
   return (
     <Layout>
@@ -83,32 +81,47 @@ function About() {
 
           <h2 className="text-2xl font-serif font-bold text-[var(--color-editorial-text)] mb-4 border-b border-[var(--color-editorial-border)] pb-2">Frequently Asked Questions</h2>
           <section aria-label="Frequently Asked Questions">
-            <Accordion className="w-full mb-12">
-              <AccordionItem value="item-1">
-                <AccordionTrigger className="text-[var(--color-editorial-text)] font-bold text-lg hover:no-underline">Is this an official government application?</AccordionTrigger>
-                <AccordionContent className="text-[var(--color-editorial-muted)]">
+            <div className="w-full mb-12 space-y-4">
+              <details className="group border-b border-[var(--color-editorial-border)] pb-4">
+                <summary className="text-[var(--color-editorial-text)] font-bold text-lg cursor-pointer flex justify-between items-center group-open:text-blue-600">
+                  Is this an official government application?
+                  <span className="transition-transform group-open:rotate-180">↓</span>
+                </summary>
+                <div className="mt-4 text-[var(--color-editorial-muted)]">
                   No, this is an independent, non-partisan educational tool summarizing public information.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-2">
-                <AccordionTrigger className="text-[var(--color-editorial-text)] font-bold text-lg hover:no-underline">Do you collect my voter information?</AccordionTrigger>
-                <AccordionContent className="text-[var(--color-editorial-muted)]">
+                </div>
+              </details>
+              
+              <details className="group border-b border-[var(--color-editorial-border)] pb-4">
+                <summary className="text-[var(--color-editorial-text)] font-bold text-lg cursor-pointer flex justify-between items-center group-open:text-blue-600">
+                  Do you collect my voter information?
+                  <span className="transition-transform group-open:rotate-180">↓</span>
+                </summary>
+                <div className="mt-4 text-[var(--color-editorial-muted)]">
                   No. All progress tracking is stored locally on your device. We do not transmit or store your checklist data or personal information.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-3">
-                <AccordionTrigger className="text-[var(--color-editorial-text)] font-bold text-lg hover:no-underline">How often is the data updated?</AccordionTrigger>
-                <AccordionContent className="text-[var(--color-editorial-muted)]">
+                </div>
+              </details>
+              
+              <details className="group border-b border-[var(--color-editorial-border)] pb-4">
+                <summary className="text-[var(--color-editorial-text)] font-bold text-lg cursor-pointer flex justify-between items-center group-open:text-blue-600">
+                  How often is the data updated?
+                  <span className="transition-transform group-open:rotate-180">↓</span>
+                </summary>
+                <div className="mt-4 text-[var(--color-editorial-muted)]">
                   The dates reflect the schedules published by the Election Commission. For definitive timings, always cross-reference official portals.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-4">
-                <AccordionTrigger className="text-[var(--color-editorial-text)] font-bold text-lg hover:no-underline">Environmental Impact</AccordionTrigger>
-                <AccordionContent className="text-[var(--color-editorial-muted)]">
+                </div>
+              </details>
+              
+              <details className="group border-b border-[var(--color-editorial-border)] pb-4">
+                <summary className="text-[var(--color-editorial-text)] font-bold text-lg cursor-pointer flex justify-between items-center group-open:text-blue-600">
+                  Environmental Impact
+                  <span className="transition-transform group-open:rotate-180">↓</span>
+                </summary>
+                <div className="mt-4 text-[var(--color-editorial-muted)]">
                   By completing civic processes digitally, you help reduce paper consumption across India's electoral system.
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+                </div>
+              </details>
+            </div>
           </section>
 
           <div className="pt-8 border-t border-[var(--color-editorial-border)] text-[10px] uppercase tracking-widest font-bold">

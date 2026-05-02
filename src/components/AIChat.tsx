@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageSquare, X, Send, Bot, Sparkles } from 'lucide-react';
 import { Button } from './ui/button';
-import { submitChatMessage } from '../services/geminiService';
 import Markdown from 'react-markdown';
+import DOMPurify from 'dompurify';
 
 interface ChatMessage {
   role: 'user' | 'model';
@@ -75,6 +75,7 @@ export function AIChat() {
     setIsLoading(true);
 
     try {
+      const { submitChatMessage } = await import('../services/geminiService');
       const responseText = await submitChatMessage(messages, userMsg);
       setMessages([...newHistory, { role: 'model', parts: [{ text: responseText }] }]);
     } catch (error) {
@@ -148,7 +149,9 @@ export function AIChat() {
                     }`}
                   >
                      <div className="markdown-body">
-                       <Markdown>{m.parts[0].text}</Markdown>
+                       <Markdown rehypePlugins={[]} components={{ p: ({children}) => <p>{children}</p> }}>
+                         {DOMPurify.sanitize(m.parts[0].text)}
+                       </Markdown>
                      </div>
                   </div>
                 </div>
